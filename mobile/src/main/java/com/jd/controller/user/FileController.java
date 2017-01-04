@@ -1,26 +1,16 @@
 package com.jd.controller.user;
 
-import com.jd.constant.BusinessType;
 import com.jd.core.ensure.Ensure;
-import com.jd.entity.user.Evaluation;
-import com.jd.entity.user.Picture;
 import com.jd.face.JsonResult;
-import com.jd.request.CommonRequest;
-import com.jd.request.EvaluationRequest;
-import com.jd.utils.ArrayUtils;
-import com.jd.utils.FileUtil;
 import com.jd.utils.QiniuUtils;
-import com.jd.utils.StringUtil;
 import com.qiniu.api.auth.AuthException;
 import org.json.JSONException;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**

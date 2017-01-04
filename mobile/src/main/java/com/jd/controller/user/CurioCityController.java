@@ -101,16 +101,15 @@ public class CurioCityController {
 
     /**
      * 古玩城 店铺联合展示
+     * ok
      *
      * @param
      * @return
      */
     @RequestMapping(value = "/query", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult queryCurioCityAndShop(String key, String cityCode) {
-        CurioCityListRequest CurioCityListRequest = new CurioCityListRequest();
-        CurioCityListRequest.setKey(key);
-        CurioCityListRequest.setCityCode(cityCode);
+    public JsonResult queryCurioCityAndShop(CurioCityListRequest request, String key, String cityCode) {
+        CurioCityListRequest CurioCityListRequest = request;
         CurioCityDto curioCityDto = null;
         List<ShopDto> shopDtoList;
         ShopAndCurioResponse shopAndCurioResponse = new ShopAndCurioResponse();
@@ -132,15 +131,15 @@ public class CurioCityController {
 
     /**
      * 古玩城店铺列表 分頁
+     * ok
      *
      * @param request
      * @return
      */
     @RequestMapping(value = "/shop/page", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult findCurioCityShopPage(@RequestBody CommonRequest<ShopListRequest> request) {
-        Pager pager = request.getPager();
-        ShopListRequest shopListRequest = request.getParam(ShopListRequest.class);
+    public JsonResult findCurioCityShopPage(Pager pager, ShopListRequest request) {
+        ShopListRequest shopListRequest = request;
         ShopDto shopDto = null;
         if (shopListRequest != null) {
             shopDto = mapper.map(shopListRequest, ShopDto.class);
@@ -159,12 +158,10 @@ public class CurioCityController {
      */
     @RequestMapping(value = "/eval/page", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult findCurioCityEvaluationPage(@RequestBody CommonRequest<EvaluationListRequest> request) {
-        Pager pager;
-        pager = request.getPager();
-        EvaluationListRequest evaluationListRequest = request.getParam(EvaluationListRequest.class);
-        Ensure.that(evaluationListRequest).isNotNull("");
-        Ensure.that(evaluationListRequest.getCurioCityId()).isNotNull("");
+    public JsonResult findCurioCityEvaluationPage(Pager pager, EvaluationListRequest request) {
+        EvaluationListRequest evaluationListRequest = request;
+        Ensure.that(evaluationListRequest).isNotNull("10000");
+        Ensure.that(evaluationListRequest.getCurioCityId()).isNotNull("10001");
         EvaluationDto evaluationDto = mapper.map(evaluationListRequest, EvaluationDto.class);
         PageInfo<EvaluationDto> evaluationDtoPageInfo = curioCityService.queryEvaluationListByCurioId(pager, evaluationDto);
         if (pager != null)

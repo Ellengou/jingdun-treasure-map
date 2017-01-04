@@ -63,8 +63,8 @@ public class SystemController extends BaseController {
      */
     @RequestMapping(value = "/mine-list", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult getPage(@RequestBody CommonRequest<TagRequest> request) {
-        TagRequest tagRequest = request.getParam(TagRequest.class);
+    public JsonResult getPage(TagRequest request) {
+        TagRequest tagRequest = request;
         TagDto dto = null;
         if (tagRequest != null)
             dto = mapper.map(tagRequest, TagDto.class);
@@ -81,8 +81,8 @@ public class SystemController extends BaseController {
      */
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult getTagList(CommonRequest<TagRequest> request) {
-        TagRequest tagRequest = request.getParam(TagRequest.class);
+    public JsonResult getTagList(TagRequest request) {
+        TagRequest tagRequest = request;
         TagDto dto = null;
         if (tagRequest != null) {
             dto = mapper.map(tagRequest, TagDto.class);
@@ -111,8 +111,8 @@ public class SystemController extends BaseController {
      */
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     @ResponseBody
-    public JsonResult saveOrUpdateTag(@RequestBody CommonRequest<TagRequest> request) {
-        TagRequest tag = request.getParam(TagRequest.class);
+    public JsonResult saveOrUpdateTag(TagRequest request) {
+        TagRequest tag = request;
         Ensure.that(tag).isNotNull("10000");
         Boolean res = shopService.delShopTagsById(tag.getBusinessId(), Arrays.asList(tag.getId()));
         Ensure.that(res).isTrue("20001");
@@ -127,8 +127,8 @@ public class SystemController extends BaseController {
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult delTag(@RequestBody CommonRequest<TagRequest> request) {
-        TagRequest tag = request.getParam(TagRequest.class);
+    public JsonResult delTag(TagRequest request) {
+        TagRequest tag = request;
         Ensure.that(tag).isNotNull("10000");
         Ensure.that(shopService.saveShopTags(tag.getId(), Arrays.asList(tag.getId()))).isTrue("20001");
         return new JsonResult();

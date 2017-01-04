@@ -1,5 +1,7 @@
 package com.jd.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Created by ellen on 2016/12/26.
  */
@@ -7,6 +9,7 @@ public class TagResponse {
 
     private Long id;
     private String name;
+    @JsonIgnore
     private String desc;
     private Integer sort;
 
