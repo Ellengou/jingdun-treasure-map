@@ -9,12 +9,12 @@ import com.jd.exception.AccountFrozenException;
 import com.jd.exception.CodeErrorException;
 import com.jd.face.JsonResult;
 import com.jd.face.Result;
-import com.jd.request.UserRequest;
 import com.jd.request.CommonRequest;
+import com.jd.request.UserRequest;
 import com.jd.response.UserResponse;
 import com.jd.service.account.UserService;
 import com.jd.shiro.CacheSubject;
-import com.jd.utils.*;
+import com.jd.utils.StringUtil;
 import com.jd.webkits.validatecode.RandomValidateCode;
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
@@ -25,7 +25,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.ServletException;
@@ -33,7 +36,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by ellengou on 2016/11/18.
