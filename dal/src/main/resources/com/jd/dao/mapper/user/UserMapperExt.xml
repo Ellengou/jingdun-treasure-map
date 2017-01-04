@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jd.dao.mapper.user.UserMapperExt">
+  <resultMap id="base" type="com.jd.entity.user.User" extends="com.jd.dao.mapper.user.UserMapper.BaseResultMap"/>
+  <sql id="column_List">
+    id, user_name, pass_word, nick_name, true_name, unique_no, address, age, sex, family,
+    education, major, mobile, qq, wechat, email, city_code, locked, lock_time, created_time,
+    updated_time, deleted
+  </sql>
+
+  <update id="updatePassword" >
+    UPDATE `user`
+    SET pass_word = #{password}
+    WHERE
+        id = #{id}
+        AND deleted = FALSE
+  </update>
+
+  <select id="findUserByNameAndPassword" resultMap="base">
+    SELECT
+        <include refid="column_List"/>
+    FROM
+        `user`
+    WHERE
+        user_name = #{name}
+    AND pass_word = #{password}
+    AND deleted = FALSE
+    limit 1
+  </select>
+
+  <select id="findUserByName" resultMap="base">
+    SELECT
+    <include refid="column_List"/>
+    FROM
+    `user`
+    WHERE
+    user_name = #{name}
+    AND deleted = FALSE
+    limit 1
+  </select>
+
+</mapper>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jd.dao.mapper.user.ShopMapperExt" >
+  <resultMap id="base" type="com.jd.entity.user.Shop" extends="com.jd.dao.mapper.user.ShopMapper.BaseResultMap" />
+  <sql id="column_List">
+    id, region_id, city_code, curio_city_id, province, city, address, scope, contact,
+    domain, shop_hours, banner_id, avatar_id, name, full_name, visible, brand_id, wechat,
+    weibo, stars, position, slogans, distribution, signboards, wechat_code, create_time,
+    update_time, deleted
+  </sql>
+
+  <select id="queryShopList" resultType="com.jd.dtos.ShopDto">
+          SELECT
+              a.id,
+              a.`name`,
+              a.province,
+              a.city,
+              CASE a.curio_city_id
+              WHEN 0 THEN
+              '--'
+              ELSE
+              (
+              SELECT
+              `name`
+              FROM
+              curio_city
+              WHERE
+              id = a.curio_city_id
+              )
+              END AS curioCityName,
+              a.address,
+              a.contact,
+              GROUP_CONCAT(d.`name`) tagsName,
+              a.id AS viewedNumber,
+              a.id AS storedNumer,
+              CASE a.`status`
+              WHEN 0 THEN
+              '待审核'
+              WHEN 1 THEN
+              '正常'
+              WHEN 2 THEN
+              '其他'
+              WHEN 3 THEN
+              '其他'
+              WHEN 4 THEN
+              '关闭'
+              END AS `status`
+              FROM
+              shop a
+              JOIN shop_tag c ON a.id = c.shop_id
+              JOIN tag d ON d.id = c.tag_id
+              AND a.deleted = FALSE
+              AND d.deleted = FALSE
+              LEFT JOIN curio_city b ON a.curio_city_id = b.id
+              AND b.deleted = FALSE
+          <if test="param != null">
+              <if test="param.tagId !=null">
+                  AND c.tag_id = #{param.tagId}
+              </if>
+              <if test="param.cityCode !=null">
+                  AND a.city_code = #{param.cityCode}
+              </if>
+              <if test="param.status !=null">
+                  AND a.`status` = #{param.status}
+              </if>
+              <if test="param.key !=null">
+                  AND (
+                  a.`name` LIKE CONCAT('%', #{param.key}, '%')
+                  OR a.address LIKE CONCAT('%', #{param.key}, '%')
+                  OR a.contact LIKE CONCAT('%', #{param.key}, '%')
+                  )
+              </if>
+          </if>
+          GROUP BY
+          a.id
+  </select>
+
+  <select id="findShopInfo" resultType="com.jd.dtos.ShopDto">
+          SELECT
+            a.`name`,
+            a.address,
+            a.contact,
+            a.shop_hours shopHours,
+            a.scope,
+            a.slogans,
+            a.curio_city_id,
+            a.id,
+            GROUP_CONCAT(b.tag_id) tagIds,
+            GROUP_CONCAT(c.path) shopViews,
+            d.path banner
+        FROM
+            shop a
+        JOIN shop_tag b ON a.id = b.shop_id
+        AND a.deleted = FALSE
+        LEFT JOIN picture c ON a.id = c.foreign_id
+        AND c.picture_type = 'SHOP_VIEW'
+        LEFT JOIN picture d ON a.id = d.foreign_id
+        AND d.picture_type = 'SHOP_BANNER'
+        AND a.deleted = FALSE
+        GROUP BY
+            a.id
+        LIMIT 1
+  </select>
+</mapper>

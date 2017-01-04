@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jd.dao.mapper.user.TagMapperExt">
+    <resultMap id="base" type="com.jd.entity.user.Tag" extends="com.jd.dao.mapper.user.TagMapper.BaseResultMap"/>
+    <sql id="column_List">
+    id,
+	parent_id,
+	`name`,
+	banner_id,
+	`desc`,
+	sequence,
+	visible,
+	create_time,
+	update_time,
+	deleted
+  </sql>
+
+    <select id="queryTagList" resultMap="base">
+        SELECT
+        <include refid="column_List"/>
+        FROM tag
+        WHERE deleted = FALSE
+        <if test="param != null">
+            <if test="param.key != null">
+                AND name = #{param.key}
+            </if>
+            <if test="param.businessId != null">
+                AND EXISTS (SELECT 1 FROM shop_tag WHERE shop_id = #{param.businessId})
+            </if>
+        </if>
+    </select>
+
+    <select id="queryUserTagList" resultMap="base">
+        SELECT
+        <include refid="column_List"/>
+        FROM
+        tag a
+        INNER JOIN user_tag b ON a.id = b.tag_id
+        AND b.user_id = #{userId}
+    </select>
+
+</mapper>

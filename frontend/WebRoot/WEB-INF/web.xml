@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+  <display-name>frontend</display-name>
+	  
+	<context-param>
+		<param-name>webAppRootKey</param-name>
+		<param-value>webapp.frontend</param-value>
+	</context-param>
+    <!-- 设置Spring容器加载配置文件路径 -->
+	<context-param>
+	    <param-name>contextConfigLocation</param-name>
+	    <param-value>classpath*:/spring.xml</param-value>
+	</context-param>
+	<context-param>
+		<param-name>log4jConfigLocation</param-name>
+		<param-value>classpath:/log4j.xml</param-value>
+	</context-param>
+  
+	<!-- 解决工程编码过滤器 -->
+	<filter>
+	    <filter-name>characterEncodingFilter</filter-name>
+	    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+	    <init-param>
+	        <param-name>encoding</param-name>
+	        <param-value>UTF-8</param-value>
+	    </init-param>
+	    <init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+	    <filter-name>characterEncodingFilter</filter-name>
+	    <url-pattern>/*</url-pattern>
+	    <dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+	</filter-mapping>
+
+
+
+    <!--访问权限过滤-->
+    <!--<filter>-->
+        <!--<filter-name>loginFilter</filter-name>-->
+        <!--<filter-class>com.jd.web.session.LoginFilter</filter-class>-->
+        <!--<init-param>-->
+            <!--<param-name>wdLoginPath</param-name>-->
+            <!--<param-value>/login/login.html</param-value>-->
+        <!--</init-param>-->
+        <!--<init-param>-->
+            <!--<param-name>filterUrl</param-name>-->
+            <!--<param-value>ucenter/.*</param-value>-->
+        <!--</init-param>-->
+    <!--</filter>-->
+
+    <!--<filter-mapping>-->
+        <!--<filter-name>loginFilter</filter-name>-->
+        <!--<url-pattern>/*</url-pattern>-->
+    <!--</filter-mapping>-->
+
+    <!-- 加载Spring容器配置 -->
+	<listener>
+	    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	<!-- 加载Log4j配置 -->
+	<listener>
+    	<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>  
+	</listener>
+	<!-- 加载防止内存溢出监听器 --> 
+	<listener>
+		<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+	</listener>
+	<!-- 扩展Request作用域    scope="request" 分别是 singleton、prototype、request、session、global session-->
+	<listener>
+		<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+	</listener>
+  
+  	<!-- Spring MVC Servlet -->
+	<servlet>
+		<servlet-name>dispatcher</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath*:/config/spring-mvc-customize.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>dispatcher</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	
+	<!-- 单点登录 -->
+  <servlet>
+    <display-name>同步UC Server发出的操作指令</display-name>
+    <servlet-name>UC</servlet-name>
+    <servlet-class>com.jd.api.ucenter.UC</servlet-class>
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UC</servlet-name>
+    <url-pattern>/api/uc.php</url-pattern>
+  </servlet-mapping>
+
+  <!-- 错误页面 -->
+  <error-page>
+	<error-code>404</error-code>
+	<location>/errors/404.html</location>
+  </error-page>
+</web-app>

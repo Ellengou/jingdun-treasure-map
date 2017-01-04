@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jd.dao.mapper.user.RoleMapperExt">
+    <resultMap id="base" type="com.jd.entity.user.Role" extends="com.jd.dao.mapper.user.RoleMapper.BaseResultMap"/>
+
+    <sql id="column_List">
+    id, name, value, is_system, description, create_date, modify_date, deleted
+  </sql>
+
+    <select id="findUserRoleByAccountId" resultMap="base">
+        SELECT
+        <include refid="column_List"/>
+        FROM
+        role
+        WHERE
+        id IN(
+        SELECT
+        role_id
+        FROM
+        account_role ar
+        WHERE
+        ar.account_id = #{accountId}
+        )
+    </select>
+
+    <select id="selectAllRoles" resultMap="base">
+        SELECT
+        <include refid="column_List"/>
+        FROM
+        role
+        WHERE
+        deleted = FALSE
+    </select>
+
+</mapper>

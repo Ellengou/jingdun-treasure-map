@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jd.dao.mapper.user.CurioCityMapperExt" >
+  <resultMap id="base" type="com.jd.entity.user.CurioCity" extends="com.jd.dao.mapper.user.CurioCityMapper.BaseResultMap" />
+  <sql id="column_List" >
+    id, region_id, city_code, province, city, address, contact, domain, shop_hours, banner_id, 
+    avatar_id, name, full_name, visible, brand_id, wechat, weibo, stars, position, wechat_code, 
+    status, create_time, update_time, deleted
+  </sql>
+
+  <select id="queryCurioCityList" resultType="com.jd.dtos.CurioCityDto">
+     SELECT
+          a.address,
+          a.banner_id,
+          a.city,
+          a.city_code,
+          a.contact,
+          a.domain,
+          a.full_name,
+          a.id,
+          a.`name`,
+          a.position,
+          a.province,
+          a.scope,
+          a.shop_hours,
+          a.stars,
+          GROUP_CONCAT(c.`name`)tagsName,
+          GROUP_CONCAT(c.id)tagsId,
+          a.`status`
+      FROM
+          curio_city a
+      JOIN curio_city_tag b ON a.id = b.shop_id
+      JOIN tag c ON c.id = b.tag_id
+      AND a.deleted = FALSE
+      AND c.deleted = FALSE
+      <if test="param != null">
+        <if test="param.tagId !=null">
+          AND b.tag_id = #{param.tagId}
+        </if>
+        <if test="param.cityCode !=null">
+          AND a.city_code = #{param.cityCode}
+        </if>
+        <if test="param.status !=null">
+          AND a.`status` = #{param.status}
+        </if>
+        <!--<if test="param.key !=null">-->
+          <!--AND (-->
+          <!--a.`name` LIKE CONCAT('%', #{param.key}, '%')-->
+          <!--OR a.address LIKE CONCAT('%', #{param.key}, '%')-->
+          <!--OR a.contact LIKE CONCAT('%', #{param.key}, '%')-->
+          <!--)-->
+        <!--</if>-->
+      </if>
+      GROUP BY
+          a.id
+  </select>
+
+  <select id="findCurioCityInfo" resultType="com.jd.dtos.CurioCityDto">
+      SELECT
+          a.address,
+          a.avatar_id,
+          a.banner_id,
+          a.brand_id,
+          a.city,
+          a.city_code,
+          a.contact,
+          a.create_time,
+          a.deleted,
+          a.domain,
+          a.full_name,
+          a.id,
+          a.`name`,
+          a.position,
+          a.province,
+          a.region_id,
+          a.scope,
+          a.shop_hours,
+          a.stars,
+          a.update_time,
+          a.visible,
+          a.wechat,
+          a.wechat_code,
+          a.weibo,
+          GROUP_CONCAT(c.`name`)tagsName,
+          GROUP_CONCAT(c.id)tagsId,
+          a.`status`
+      FROM
+          curio_city a
+      JOIN curio_city_tag b ON a.id = b.shop_id
+      JOIN tag c ON c.id = b.tag_id
+      AND a.deleted = FALSE
+      AND c.deleted = FALSE
+      AND a.id = #{id}
+      GROUP BY
+          a.id
+  </select>
+</mapper>

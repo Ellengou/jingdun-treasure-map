@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jd.dao.mapper.user.RolePermissionMapperExt">
+    <resultMap id="base" type="com.jd.entity.user.RolePermission"
+               extends="com.jd.dao.mapper.user.RolePermissionMapper.BaseResultMap"/>
+    <sql id="column_List">
+    id, permission_id, role_id, create_time, update_time, deleted
+  </sql>
+
+    <select id="findResourceList" resultType="com.jd.dtos.RolePermissionDto">
+        SELECT
+        a.id,
+        a.`name`,
+        GROUP_CONCAT(b.id)buttonIds,
+        GROUP_CONCAT(b.`name`)buttonNames
+        FROM
+        permission a
+        JOIN permission b ON a.id = b.parent_id
+        AND b.type = 'BUTTON'
+        WHERE a.deleted = FALSE
+        <if test="ids != null">
+            AND a.id IN
+            <foreach collection="ids" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        GROUP BY
+        a.id
+    </select>
+
+    <select id="findMenusList" resultType="com.jd.dtos.RolePermissionDto">
+        SELECT
+        a.`level`,
+        a.`name`,
+        a.id,
+        GROUP_CONCAT(b.id)menuIds,
+        GROUP_CONCAT(b.`name`)menuNames
+        FROM
+        permission a
+        JOIN permission b ON a.id = b.parent_id
+        AND b.type = 'MENU'
+        WHERE a.deleted = FALSE
+        <if test="ids !=null ">
+            AND a.id IN
+            <foreach collection="ids" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        <if test="levels != null">
+            AND a.level IN
+            <foreach collection="levels" item="level" open="(" separator="," close=")">
+                #{level}
+            </foreach>
+        </if>
+        GROUP BY
+        a.id
+    </select>
+</mapper>
