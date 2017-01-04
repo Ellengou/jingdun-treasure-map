@@ -95,7 +95,6 @@ public class HomeController extends BaseController {
         try {
             Ensure.that(userForm).isNotNull("1003");
             String image = userForm.getImageCode();
-            Ensure.that(image).isNotNull("1003");
             Object object = SecurityUtils.getSubject().getSession().getAttribute(RandomValidateCode.VALIDATE_CODE_NAME);
             String code = String.valueOf(object);
             if (object != null)

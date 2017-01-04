@@ -35,10 +35,7 @@
       #{description,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{modifyDate,jdbcType=TIMESTAMP}, 
       #{deleted,jdbcType=BIT})
   </insert>
-  <insert id="insertSelective" parameterType="com.jd.entity.user.Role" >
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
+  <insert id="insertSelective" parameterType="com.jd.entity.user.Role" useGeneratedKeys="true" keyProperty="id" >
     insert into role
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="name != null" >
@@ -86,6 +83,9 @@
         #{deleted,jdbcType=BIT},
       </if>
     </trim>
+    <selectKey resultType="long" order="AFTER" keyProperty="id">
+      SELECT LAST_INSERT_ID() AS id
+    </selectKey>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.jd.entity.user.Role" >
     update role

@@ -33,6 +33,7 @@ public class Account extends BaseDomain {
     private Date lockTime;
 
     private String roleIds;
+
     private String key;
 
     public String getRoleIds() {

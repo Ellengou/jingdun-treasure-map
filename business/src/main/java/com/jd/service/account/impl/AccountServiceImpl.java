@@ -95,9 +95,12 @@ public class AccountServiceImpl implements AccountService {
     public PageInfo<Role> selectAllRoles(Pager pager) {
         if (pager != null)
             PageHelper.startPage(pager.getPageNum(), pager.getPageSize());
-        List<Role> roles = roleMapperExt.selectAllRoles();
-        PageInfo<Role> pageInfo = new PageInfo<>(roles);
-        return pageInfo;
+        List<Role> list = roleMapperExt.selectAllRoles();
+        return new PageInfo<Role>(list);
+    }
+
+    public List<Role> selectAllRoleList(){
+      return   roleMapperExt.selectAllRoles();
     }
 
     @Override
@@ -117,7 +120,7 @@ public class AccountServiceImpl implements AccountService {
         for (int i = 0; i < resources.size(); i++) {
             RolePermission roleResource = new RolePermission();
             roleResource.setPermissionId(resources.get(i));
-            roleResource.setRoleId(ok);
+            roleResource.setRoleId(role.getId());
             rolePermissionMapperExt.insertSelective(roleResource);
         }
 
@@ -180,6 +183,7 @@ public class AccountServiceImpl implements AccountService {
         PageInfo<AccountListDto> pageInfo = new PageInfo<>(accountList);
         return pageInfo;
     }
+
 
     @Override
     public Boolean updatePassword(Long id, String password) {

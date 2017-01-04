@@ -27,10 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Ellen.
@@ -82,10 +79,10 @@ public class SystemController {
     @RequestMapping(value = "/roles", method = RequestMethod.GET)
     @ResponseBody
     public JsonResult findAllRoles() {
-        PageInfo<Role> pageInfo = accountService.selectAllRoles(null);
+        List<Role> list = accountService.selectAllRoleList();
         List<RoleListResponse> responses = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(pageInfo.getList()))
-            responses = DozerUtils.maps(pageInfo.getList(), RoleListResponse.class);
+        if (CollectionUtils.isNotEmpty(list))
+            responses = DozerUtils.maps(list, RoleListResponse.class);
         return new JsonResult(responses);
     }
 
@@ -103,8 +100,12 @@ public class SystemController {
         List<Long>  menuId = roleRequest.getMeunIds();
         Ensure.that(roleRequest).isNotNull("10000");
         List<Long> list = new ArrayList<>();
-        list.addAll(resourceIds);
-        list.addAll(menuId);
+        if (com.jd.core.utils.CollectionUtils.isNotEmpty(resourceIds))
+            list = new ArrayList<>(resourceIds);
+        if (com.jd.core.utils.CollectionUtils.isNotEmpty(list))
+            list.addAll(menuId);
+        else
+            list = new ArrayList<>(menuId);
         RoleDto role = mapper.map(roleRequest, RoleDto.class);
         role.setPermissionIds(list);
         if (role.getId() != null)
@@ -137,12 +138,10 @@ public class SystemController {
                         res.add(resDto.getId());
                     }
             }
-            List<Long> list = new ArrayList<>();
-            list.addAll(meuns);
-            list.addAll(res);
-            response.setResourceIds(list);
+            response.setResourceIds(res);
+            response.setMeunIds(meuns);
         }
-        return new JsonResult();
+        return new JsonResult(response);
     }
 
     /**
@@ -184,6 +183,7 @@ public class SystemController {
         return new JsonResult(pager, responses);
     }
 
+
     /**
      * 账户新增 修改  依据账户ID字段
      *
@@ -217,6 +217,29 @@ public class SystemController {
         res.setId(accountId);
         res.setDeleted(Boolean.TRUE);
         Ensure.that(accountService.updateAccount(account));
+        return new JsonResult();
+    }
+
+
+    /**
+     * 禁用 启用账户
+     *
+     * @param accountId
+     * @return
+     */
+    @RequestMapping(value = "/account/disable/{id}", method = RequestMethod.PUT)
+    @ResponseBody
+    public JsonResult disableAccount(@PathVariable("id") Long accountId,Boolean locked) {
+        Account account = accountService.findAccountById(accountId);
+        Ensure.that(account).isNotNull("10000");
+        Account res = new Account();
+        res.setId(accountId);
+        res.setLocked(locked);
+        res.setLockTime(new Date());
+        if(locked)
+            Ensure.that(accountService.updateAccount(account)).isNotNull("1017");
+        else
+            Ensure.that(accountService.updateAccount(account)).isNotNull("1018");
         return new JsonResult();
     }
 

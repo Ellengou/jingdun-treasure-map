@@ -22,7 +22,7 @@
 //                var url = "/pigs/basic/retail/9";
 //                var url = "/basic/retail/add";
             var base = "http://127.0.0.1:8081";
-            var url = "/basic/roles";
+            var url = "/basic/role";
 //            var url = "/login";
             var certCode = $("#certCode").val();
 //                var data = {"userName": '李四', "password": '123456',"issuingUnit":certCode,
@@ -35,11 +35,12 @@
 //                    "password": 'e10adc3949ba59abbe56e057f20f883e',
 //                    "imageCode": certCode
 //                }};
-            var data = {
-                "key":"",
-                "pager":{},
-                "param":{}
-            };
+            var data = {"param":{
+                "name":"",
+               "description":"hahsdghahdg",
+                "meunIds":[1,8],
+                "resourceIds":[2,5]
+            }};
             $.ajax({
                 type: 'post',
                 url: url,
