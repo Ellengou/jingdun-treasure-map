@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.jd.common.mybatis.Pager;
 import com.jd.core.ensure.Ensure;
+import com.jd.core.utils.CollectionUtils;
 import com.jd.dao.mapper.user.*;
 import com.jd.dtos.AccountListDto;
 import com.jd.dtos.RoleDto;
@@ -112,10 +113,10 @@ public class AccountServiceImpl implements AccountService {
     public Role saveRole(RoleDto dto) {
         Role role = mapper.map(dto, Role.class);
         Long ok = roleMapperExt.insertSelective(role);
-        Long[] resources = dto.getPermissionIds();
-        for (int i = 0; i < resources.length; i++) {
+        List<Long> resources = dto.getPermissionIds();
+        for (int i = 0; i < resources.size(); i++) {
             RolePermission roleResource = new RolePermission();
-            roleResource.setPermissionId(resources[i]);
+            roleResource.setPermissionId(resources.get(i));
             roleResource.setRoleId(ok);
             rolePermissionMapperExt.insertSelective(roleResource);
         }
@@ -153,13 +154,15 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Boolean updateRole(RoleDto dto) {
         Role role = mapper.map(dto, Role.class);
-        Long[] resources = dto.getPermissionIds();
-        Ensure.that(rolePermissionMapperExt.deleteByRoleId(dto.getId())).isTrue("");
-        for (int i = 0; i < resources.length; i++) {
-            RolePermission roleResource = new RolePermission();
-            roleResource.setPermissionId(resources[i]);
-            roleResource.setRoleId(dto.getId());
-            rolePermissionMapperExt.insertSelective(roleResource);
+        List<Long> resources = dto.getPermissionIds();
+        if (CollectionUtils.isNotEmpty(resources)) {
+            Ensure.that(rolePermissionMapperExt.deleteByRoleId(dto.getId())).isTrue("70001");
+            for (int i = 0; i < resources.size(); i++) {
+                RolePermission roleResource = new RolePermission();
+                roleResource.setPermissionId(resources.get(i));
+                roleResource.setRoleId(dto.getId());
+                rolePermissionMapperExt.insertSelective(roleResource);
+            }
         }
         return roleMapperExt.updateByPrimaryKeySelective(role) > 0;
     }

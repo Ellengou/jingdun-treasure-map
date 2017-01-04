@@ -1,6 +1,7 @@
 package com.jd.request;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by renchao on 2016/12/30.
@@ -22,9 +23,10 @@ public class RoleRequest {
     private Date modifyDate;
 
     private Boolean deleted;
-    private Long meunIds[];//菜单ID
 
-    private Long resourceIds[];//资源ID
+    private  List<Long>  meunIds;//菜单ID
+
+    private  List<Long>  resourceIds;//资源ID
 
     public Long getId() {
         return id;
@@ -90,19 +92,19 @@ public class RoleRequest {
         this.deleted = deleted;
     }
 
-    public Long[] getMeunIds() {
+    public List<Long> getMeunIds() {
         return meunIds;
     }
 
-    public void setMeunIds(Long[] meunIds) {
+    public void setMeunIds(List<Long> meunIds) {
         this.meunIds = meunIds;
     }
 
-    public Long[] getResourceIds() {
+    public List<Long> getResourceIds() {
         return resourceIds;
     }
 
-    public void setResourceIds(Long[] resourceIds) {
+    public void setResourceIds(List<Long> resourceIds) {
         this.resourceIds = resourceIds;
     }
 }

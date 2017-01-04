@@ -17,12 +17,18 @@
         permission a
         JOIN permission b ON a.id = b.parent_id
         AND b.type = 'BUTTON'
+        <if test="roleId != null">
+            JOIN role_permission rp ON a.id = rp.permission_id
+        </if>
         WHERE a.deleted = FALSE
         <if test="ids != null">
             AND a.id IN
             <foreach collection="ids" item="id" open="(" separator="," close=")">
                 #{id}
             </foreach>
+        </if>
+        <if test="roleId !=null">
+            AND rp.role_id = #{roleId}
         </if>
         GROUP BY
         a.id
@@ -39,6 +45,9 @@
         permission a
         JOIN permission b ON a.id = b.parent_id
         AND b.type = 'MENU'
+        <if test="roleId != null">
+            JOIN role_permission rp ON a.id = rp.permission_id
+        </if>
         WHERE a.deleted = FALSE
         <if test="ids !=null ">
             AND a.id IN
@@ -51,6 +60,9 @@
             <foreach collection="levels" item="level" open="(" separator="," close=")">
                 #{level}
             </foreach>
+        </if>
+        <if test="roleId !=null">
+            AND rp.role_id = #{roleId}
         </if>
         GROUP BY
         a.id
