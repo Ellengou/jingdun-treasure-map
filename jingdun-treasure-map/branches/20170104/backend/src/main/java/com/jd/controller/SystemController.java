@@ -99,10 +99,14 @@ public class SystemController {
     @ResponseBody
     public JsonResult asaveAndUpdateRole(@RequestBody CommonRequest<RoleRequest> request) {
         RoleRequest roleRequest = request.getParam(RoleRequest.class);
-        Long[] resourceIds = roleRequest.getResourceIds();
-        Long[] menuId = roleRequest.getMeunIds();
+        List<Long>  resourceIds = roleRequest.getResourceIds();
+        List<Long>  menuId = roleRequest.getMeunIds();
         Ensure.that(roleRequest).isNotNull("10000");
+        List<Long> list = new ArrayList<>();
+        list.addAll(resourceIds);
+        list.addAll(menuId);
         RoleDto role = mapper.map(roleRequest, RoleDto.class);
+        role.setPermissionIds(list);
         if (role.getId() != null)
             accountService.updateRole(role);
         else
@@ -121,7 +125,24 @@ public class SystemController {
     public JsonResult addRole(@PathVariable("id") Long roleId) {
         Role role = accountService.findRoleById(roleId);
         Ensure.that(role).isNotNull("1013");
-        return new JsonResult(mapper.map(role, RolesResponse.class));
+        RolesResponse response =  mapper.map(role, RolesResponse.class);
+        List<RoleMenuRoleResourceResponse>  roleResourceResponses = getRoleResourceList(roleId);
+        if (com.jd.core.utils.CollectionUtils.isNotEmpty(roleResourceResponses)) {
+            List<Long> meuns = new ArrayList<>();
+            List<Long> res = new ArrayList<>();
+            for (RoleMenuRoleResourceResponse resourceResponse : roleResourceResponses) {
+                meuns.add(resourceResponse.getId());
+                if (com.jd.core.utils.CollectionUtils.isNotEmpty(resourceResponse.getResource()))
+                    for (ResourceResponse resDto : resourceResponse.getResource()){
+                        res.add(resDto.getId());
+                    }
+            }
+            List<Long> list = new ArrayList<>();
+            list.addAll(meuns);
+            list.addAll(res);
+            response.setResourceIds(list);
+        }
+        return new JsonResult();
     }
 
     /**
@@ -344,8 +365,17 @@ public class SystemController {
     @RequestMapping(value = "/role-resource/list", method = RequestMethod.GET)
     @ResponseBody
     public JsonResult roleResourceList() {
+        return new JsonResult(getRoleResourceList(null));
+    }
+
+    /**
+     *
+     * @param roleId
+     * @return
+     */
+    public  List<RoleMenuRoleResourceResponse>  getRoleResourceList(Long roleId){
         //一级菜单
-        List<RolePermissionDto> oneLevelMenusList = shopService.findMenusList(null, "1");
+        List<RolePermissionDto> oneLevelMenusList = shopService.findMenusList(null, "1",roleId);
         List<RolePermissionDto> twoAndThreeLevelMenusList;
         List<RolePermissionDto> roleResourceDtos;
         List<RoleMenuRoleResourceResponse> roleResourceResponses = new ArrayList<>();
@@ -357,7 +387,7 @@ public class SystemController {
                 String mnames = dto.getMenuNames();
                 List<ResourceResponse> resourceResponses = new ArrayList<>();
                 //2 3 级菜单
-                twoAndThreeLevelMenusList = shopService.findMenusList(mids, "2,3");
+                twoAndThreeLevelMenusList = shopService.findMenusList(mids, "2,3",roleId);
                 for (RolePermissionDto domain : twoAndThreeLevelMenusList) {
                     Set<String> ids;
                     ids = new HashSet<>();
@@ -378,7 +408,7 @@ public class SystemController {
                 }
                 twoAndThreeLevelMenusList.forEach(rolePermissionDto -> resourceQueryStr.concat(rolePermissionDto.getMenuIds()));
                 //当前菜单下所有权限集合
-                roleResourceDtos = shopService.findResourceList(resourceQueryStr);
+                roleResourceDtos = shopService.findResourceList(resourceQueryStr,roleId);
                 for (RolePermissionDto permissionDto : roleResourceDtos) {
                     Set<String> ids = new HashSet<>();
                     Set<String> names = new HashSet<>();
@@ -400,8 +430,6 @@ public class SystemController {
                 roleMenuRoleResourceResponse.setResource(resourceResponses);
                 roleResourceResponses.add(roleMenuRoleResourceResponse);
             }
-
-        return new JsonResult(roleResourceResponses);
+            return roleResourceResponses;
     }
-
 }

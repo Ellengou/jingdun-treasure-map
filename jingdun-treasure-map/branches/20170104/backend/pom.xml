@@ -500,6 +500,11 @@
             <artifactId>spring-beans</artifactId>
             <version>4.3.2.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.mobile</groupId>
+            <artifactId>spring-mobile-device</artifactId>
+            <version>RELEASE</version>
+        </dependency>
     </dependencies>
 
     <repositories>

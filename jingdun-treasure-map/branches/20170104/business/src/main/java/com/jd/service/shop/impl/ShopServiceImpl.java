@@ -123,13 +123,13 @@ public class ShopServiceImpl implements ShopService {
     }
 
     @Override
-    public List<RolePermissionDto> findResourceList(String ids) {
-        return rolePermissionMapperExt.findResourceList(ids != null ? Arrays.asList(ids.split(",")) : null);
+    public List<RolePermissionDto> findResourceList(String ids,Long roleId) {
+        return rolePermissionMapperExt.findResourceList(ids != null ? Arrays.asList(ids.split(",")) : null,roleId);
     }
 
     @Override
-    public List<RolePermissionDto> findMenusList(String id, String level) {
-        return rolePermissionMapperExt.findMenusList(id != null ? Arrays.asList(id.split(",")) : null, level != null ? Arrays.asList(level.split(",")) : null);
+    public List<RolePermissionDto> findMenusList(String id, String level,Long roleId) {
+        return rolePermissionMapperExt.findMenusList(id != null ? Arrays.asList(id.split(",")) : null, level != null ? Arrays.asList(level.split(",")) : null,roleId);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.jd.dtos;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by renchao on 2016/12/30.
@@ -25,7 +26,7 @@ public class RoleDto implements Serializable {
 
     private Boolean deleted;
 
-    private Long[] PermissionIds;//权限ID
+    private List<Long> PermissionIds;//权限ID
 
     public Long getId() {
         return id;
@@ -91,11 +92,11 @@ public class RoleDto implements Serializable {
         this.deleted = deleted;
     }
 
-    public Long[] getPermissionIds() {
+    public List<Long> getPermissionIds() {
         return PermissionIds;
     }
 
-    public void setPermissionIds(Long[] permissionIds) {
+    public void setPermissionIds(List<Long> permissionIds) {
         PermissionIds = permissionIds;
     }
 }

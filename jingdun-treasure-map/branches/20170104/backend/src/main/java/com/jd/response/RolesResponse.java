@@ -1,5 +1,7 @@
 package com.jd.response;
 
+import java.util.List;
+
 /**
  * @author Ellen.
  * @date 2016/12/22.
@@ -17,6 +19,26 @@ public class RolesResponse {
     private Boolean isSystem;
 
     private String description;
+
+    private List<Long> meunIds;//菜单ID
+
+    private  List<Long>  resourceIds;//资源ID
+
+    public List<Long> getMeunIds() {
+        return meunIds;
+    }
+
+    public void setMeunIds(List<Long> meunIds) {
+        this.meunIds = meunIds;
+    }
+
+    public List<Long> getResourceIds() {
+        return resourceIds;
+    }
+
+    public void setResourceIds(List<Long> resourceIds) {
+        this.resourceIds = resourceIds;
+    }
 
     public Long getId() {
         return id;

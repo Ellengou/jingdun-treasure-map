@@ -82,23 +82,4 @@
         <property name="suffix" value=".jsp"/>                <!-- 模板文件的后缀-->
     </bean>
 
-    <bean id="filterMultipartResolver" class="com.jd.core.multipart.XssCommonsMultipartResolver">
-        <property name="maxUploadSize" value="100000000"/>
-        <property name="maxInMemorySize" value="4096"/>
-    </bean>
-
-    <!-- 防xss攻击
-      驻防点：
-      1. 所有会引起insert与 update的请求，过滤(包含安全转义或清除非安全标记的 url、body) 。
-                范围：
-      1. 后台的method=[post、put、delete] 请求
-      2. excel导入需要在业务中，执行
-               待解决(遗留点)：
-      注 ：(需要权衡为了效率 请求的直接放行)
-       -->
-    <!--<bean id="xssFilterDefender" class="com.jd.core.filter.XssEscapeServletFilter"/>-->
-
-    <!--&lt;!&ndash; On pre-handle, resolve the device that originated the web request &ndash;&gt;-->
-    <!--<bean class="org.springframework.mobile.device.DeviceResolverHandlerInterceptor"/>-->
-
 </beans>
