@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jd.dao.mapper.user.CityAreaMapperEXT" >
+  <resultMap id="base" type="com.jd.entity.user.CityArea"  extends="com.jd.dao.mapper.user.CityAreaMapper.BaseResultMap" />
+  <sql id="column_List" >
+    id, code, parent_id, name, level
+  </sql>
+  <select id="selectByCodeAndLevel" resultMap="base" >
+    SELECT  <include refid="column_List" />  from city_area where `code` =  #{code} AND `level` = #{level}
+    UNION ALL
+    SELECT  <include refid="column_List" />  from city_area where parent_id =  #{code} AND `level` = #{level}
+    UNION ALL
+    SELECT  <include refid="column_List" />  from city_area where parent_id in(SELECT `code`  from city_area where parent_id =  #{code} ) AND `level` = #{level}
+    UNION ALL
+    SELECT  <include refid="column_List" />  from city_area where parent_id in(SELECT `code` from city_area where parent_id in(SELECT `code`  from city_area where parent_id =  #{code} )) AND `level` = #{level}
+  </select>
+
+  <select id="selectByCode" resultMap="base" >
+    SELECT  <include refid="column_List" />  from city_area where `code` =  #{code}
+    UNION ALL
+    SELECT  <include refid="column_List" />  from city_area where parent_id =  #{code}
+    UNION ALL
+    SELECT  <include refid="column_List" />  from city_area where parent_id in(SELECT `code`  from city_area where parent_id =  #{code} )
+    UNION ALL
+    SELECT  <include refid="column_List" />  from city_area where parent_id in(SELECT `code` from city_area where parent_id in(SELECT `code`  from city_area where parent_id =  #{code} ))
+  </select>
+
+  <select id="selectByPCode" resultMap="base" >
+    select
+    <include refid="column_List" />
+    from city_area
+    where parent_id = #{parentId}
+  </select>
+
+  <select id="queryByAny" resultMap="base" >
+    select
+    <include refid="column_List" />
+    from city_area
+    where 1 = 1
+    <if test="param != null">
+      <if test="param.code != null" >
+        code,
+      </if>
+      <if test="param.parentId != null" >
+        parent_id,
+      </if>
+      <if test="param.name != null" >
+        name,
+      </if>
+      <if test="param.level != null" >
+       AND level = #{param.level}
+      </if>
+    </if>
+  </select>
+
+</mapper>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jd.dao.mapper.user.AccountMapperExt">
+    <resultMap id="base" type="com.jd.entity.user.Account"
+               extends="com.jd.dao.mapper.user.AccountMapper.BaseResultMap"/>
+    <sql id="column_List">
+    id, username, password, salt, user_id, type, enable, init_password, create_time, 
+    update_time, deleted, locked, lock_time
+  </sql>
+
+    <select id="findByUsername" resultMap="base">
+        SELECT
+        <include refid="column_List"/>
+        FROM
+        account a
+        WHERE
+        a.username = #{name}
+        AND
+        a.password = #{password}
+        limit 1
+    </select>
+
+    <select id="findBusinessByAccount" resultMap="base">
+        SELECT
+        <include refid="column_List"/>
+        FROM
+        account a
+        WHERE
+        a.username = #{name}
+        limit 1
+    </select>
+
+    <select id="selectAccountList" resultType="com.jd.dtos.AccountListDto">
+        SELECT
+            a.id,
+            a.`enable`,
+            a.locked,
+            a.type,
+            a.user_id userId,
+            a.username,
+            GROUP_CONCAT(c.id)roleIds,
+            GROUP_CONCAT(c.`name`)roleName
+        FROM
+            account a
+        JOIN account_role b ON a.id = b.account_id
+        JOIN role c ON b.role_id = c.id
+        WHERE
+            a.deleted = FALSE
+        <if test="param != null">
+            <if test="param.key !=null ">
+                AND  (
+                a.username LIKE CONCAT('%',#{param.key},'%')
+                OR
+                c.`name` LIKE CONCAT('%',#{param.key},'%')
+                )
+            </if>
+            <if test="param.roleIds !=null ">
+                AND c.id = #{param.roleIds}
+            </if>
+            <if test="param.username != null">
+                AND a.username = #{param.username}
+            </if>
+            <if test="param.userId != null">
+                AND a.user_id = #{param.userId}
+            </if>
+            <if test="param.type != null">
+                AND a.type = #{param.type}
+            </if>
+            <if test="param.enable != null">
+                AND a.enable = #{param.enable}
+            </if>
+            <if test="param.initPassword != null">
+                AND a.init_password = #{param.initPassword}
+            </if>
+            <if test="param.locked != null">
+                AND a.locked = #{param.locked}
+            </if>
+        </if>
+        GROUP BY a.id
+    </select>
+
+</mapper>

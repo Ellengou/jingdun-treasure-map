@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jd.dao.mapper.user.EvaluationMapper">
+  <resultMap id="BaseResultMap" type="com.jd.entity.user.Evaluation">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="type" jdbcType="CHAR" property="type" />
+    <result column="business_id" jdbcType="BIGINT" property="businessId" />
+    <result column="stars" jdbcType="DOUBLE" property="stars" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="against" jdbcType="BIGINT" property="against" />
+    <result column="support" jdbcType="BIGINT" property="support" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="deleted" jdbcType="BIT" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, type, business_id, stars, content, against, support, create_time, update_time, 
+    deleted
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from evaluation
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from evaluation
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.jd.entity.user.Evaluation">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into evaluation (user_id, type, business_id, 
+      stars, content, against, 
+      support, create_time, update_time, 
+      deleted)
+    values (#{userId,jdbcType=BIGINT}, #{type,jdbcType=CHAR}, #{businessId,jdbcType=BIGINT}, 
+      #{stars,jdbcType=DOUBLE}, #{content,jdbcType=VARCHAR}, #{against,jdbcType=BIGINT}, 
+      #{support,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleted,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.jd.entity.user.Evaluation">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into evaluation
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="businessId != null">
+        business_id,
+      </if>
+      <if test="stars != null">
+        stars,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="against != null">
+        against,
+      </if>
+      <if test="support != null">
+        support,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="deleted != null">
+        deleted,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=CHAR},
+      </if>
+      <if test="businessId != null">
+        #{businessId,jdbcType=BIGINT},
+      </if>
+      <if test="stars != null">
+        #{stars,jdbcType=DOUBLE},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="against != null">
+        #{against,jdbcType=BIGINT},
+      </if>
+      <if test="support != null">
+        #{support,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleted != null">
+        #{deleted,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.jd.entity.user.Evaluation">
+    update evaluation
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=CHAR},
+      </if>
+      <if test="businessId != null">
+        business_id = #{businessId,jdbcType=BIGINT},
+      </if>
+      <if test="stars != null">
+        stars = #{stars,jdbcType=DOUBLE},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="against != null">
+        against = #{against,jdbcType=BIGINT},
+      </if>
+      <if test="support != null">
+        support = #{support,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleted != null">
+        deleted = #{deleted,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.jd.entity.user.Evaluation">
+    update evaluation
+    set user_id = #{userId,jdbcType=BIGINT},
+      type = #{type,jdbcType=CHAR},
+      business_id = #{businessId,jdbcType=BIGINT},
+      stars = #{stars,jdbcType=DOUBLE},
+      content = #{content,jdbcType=VARCHAR},
+      against = #{against,jdbcType=BIGINT},
+      support = #{support,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      deleted = #{deleted,jdbcType=BIT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+
+</mapper>

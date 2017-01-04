@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     xsi:schemaLocation="http://jakarta.apache.org/log4j/ ">
+
+    <appender name="console" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}][%-5p]%F:%L - %m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="file-info" class="org.apache.log4j.rolling.RollingFileAppender">
+        <rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
+            <param name="FileNamePattern" value="/Users/ellengou/work/logs/jd-core-info.log.%d{yyyy-MM-dd}"/>
+        </rollingPolicy>
+        <param name="Append" value="true"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}][%-5p]%F:%L - %m%n"/>
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="trace"/>
+            <param name="LevelMax" value="info"/>
+        </filter>
+    </appender>
+
+    <appender name="file-error" class="org.apache.log4j.rolling.RollingFileAppender">
+        <rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
+            <param name="FileNamePattern" value="/Users/ellengou/work/logs/jd-core-error.log.%d{yyyy-MM-dd}"/>
+        </rollingPolicy>
+        <param name="Append" value="true"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}][%-5p]%F:%L - %m%n"/>
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="INFO"/>
+            <param name="LevelMax" value="ERROR"/>
+        </filter>
+    </appender>
+
+    <appender name="druid" class="org.apache.log4j.rolling.RollingFileAppender">
+        <rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
+            <param name="FileNamePattern" value="/Users/ellengou/work/logs/jd-core-druid.log.%d{yyyy-MM-dd}"/>
+        </rollingPolicy>
+        <param name="Append" value="true"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}][%-5p]%F:%L - %m%n"/>
+        </layout>
+    </appender>
+
+    <logger name="com.jd" additivity="true">
+        <level value="debug"/>
+        <appender-ref ref="console"/>
+        <appender-ref ref="file-info"/>
+        <appender-ref ref="file-error"/>
+    </logger>
+
+    <logger name="com.xpos" additivity="true">
+        <level value="debug"/>
+        <appender-ref ref="console"/>
+        <appender-ref ref="file-info"/>
+        <appender-ref ref="file-error"/>
+    </logger>
+
+    <logger name="org.springframework.web.servlet" additivity="true">
+        <level value="debug"/>
+        <appender-ref ref="console"/>
+        <appender-ref ref="file-info"/>
+        <appender-ref ref="file-error"/>
+    </logger>
+
+    <!--druid-stat-->
+    <logger name="com.alibaba.druid" additivity="true">
+        <level value="debug"/>
+        <appender-ref ref="druid"/>
+        <appender-ref ref="console"/>
+    </logger>
+
+    <!--druid-sql-->
+    <logger name="druid.sql" additivity="true">
+        <level value="debug"/>
+        <appender-ref ref="druid"/>
+        <appender-ref ref="console"/>
+    </logger>
+
+    <root>
+        <priority value="debug"/>
+        <appender-ref ref="console"/>
+        <appender-ref ref="file-debug"/>
+        <appender-ref ref="file-info"/>
+        <appender-ref ref="file-error"/>
+    </root>
+
+</log4j:configuration>

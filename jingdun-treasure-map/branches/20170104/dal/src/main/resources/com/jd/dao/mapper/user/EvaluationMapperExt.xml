@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jd.dao.mapper.user.EvaluationMapperExt" >
+  <resultMap id="base" type="com.jd.entity.user.Evaluation" extends="com.jd.dao.mapper.user.EvaluationMapper.BaseResultMap" />
+  <sql id="column_List">
+    id, user_id, type, business_id, stars, content, against, support, create_time, update_time,
+    deleted
+  </sql>
+
+  <select id="queryEvaluationListByCurioId" resultType="com.jd.dtos.EvaluationDto">
+    SELECT
+        e.content,
+        e.create_time,
+        e.stars,
+        e.type,
+        e.support,
+        e.against,
+        e.user_id,
+        u.user_name,
+        u.nick_name,
+        u.mobile,
+        GROUP_CONCAT(p.path)views
+    FROM
+        evaluation e
+    JOIN item i ON e.business_id = i.id AND i.deleted = FALSE
+    JOIN shop s ON i.business_id = s.id AND s.deleted = FALSE
+    JOIN curio_city c ON s.curio_city_id = c.id AND c.deleted = FALSE
+    JOIN `user` u ON e.user_id = u.id AND u.deleted = FALSE
+    LEFT JOIN picture p ON p.foreign_id = e.id AND p.deleted = FALSE
+    WHERE
+        e.type = 'ITEM'
+    AND e.deleted = FALSE
+    <if test="param !=null">
+      <if test="param.curioCityId !=null">
+        AND c.id = #{param.curioCityId}
+      </if>
+      <if test="param.userId !=null">
+        AND e.user_id = #{param.userId}
+      </if>
+      <if test="param.shopId !=null">
+        AND s.id = #{param.shopId}
+      </if>
+      <if test="param.itemId !=null">
+        AND i.id = #{param.itemId}
+      </if>
+    </if>
+      GROUP BY
+      e.id
+  </select>
+
+  <select id="queryEvaluationListByShopId" resultType="com.jd.dtos.EvaluationDto">
+      SELECT
+          e.content,
+          e.create_time,
+          e.stars,
+          e.type,
+          e.support,
+          e.against,
+          e.user_id,
+          u.user_name,
+          u.nick_name,
+          u.mobile,
+          GROUP_CONCAT(p.path)views
+      FROM
+          evaluation e
+      JOIN item i ON e.business_id = i.id AND i.deleted = FALSE
+      JOIN shop s ON i.business_id = s.id AND s.deleted = FALSE
+      JOIN `user` u ON e.user_id = u.id AND u.deleted = FALSE
+      LEFT JOIN picture p ON p.foreign_id = e.id AND p.deleted = FALSE
+      WHERE
+          e.type = 'ITEM'
+      AND e.deleted = FALSE
+      <if test="param !=null">
+        <if test="param.userId !=null">
+          AND e.user_id = #{param.userId}
+        </if>
+        <if test="param.shopId !=null">
+          AND s.id = #{param.shopId}
+        </if>
+        <if test="param.itemId !=null">
+          AND i.id = #{param.itemId}
+        </if>
+      </if>
+      GROUP BY
+      e.id
+  </select>
+
+  <select id="queryEvaluationListByItemId" resultType="com.jd.dtos.EvaluationDto">
+      SELECT
+          e.content,
+          e.create_time,
+          e.stars,
+          e.type,
+          e.support,
+          e.against,
+          e.user_id,
+          u.user_name,
+          u.nick_name,
+          u.mobile,
+          GROUP_CONCAT(p.path)views
+      FROM
+          evaluation e
+      JOIN item i ON e.business_id = i.id AND i.deleted = FALSE
+      JOIN `user` u ON e.user_id = u.id AND u.deleted = FALSE
+      LEFT JOIN picture p ON p.foreign_id = e.id AND p.deleted = FALSE
+      WHERE
+          e.type = 'ITEM'
+      AND e.deleted = FALSE
+      <if test="param !=null">
+        <if test="param.userId !=null">
+          AND e.user_id = #{param.userId}
+        </if>
+        <if test="param.itemId !=null">
+          AND i.id = #{param.itemId}
+        </if>
+      </if>
+      GROUP BY
+      e.id
+  </select>
+
+
+</mapper>

@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jd.dao.mapper.user.ShopMapper">
+  <resultMap id="BaseResultMap" type="com.jd.entity.user.Shop">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="region_id" jdbcType="VARCHAR" property="regionId" />
+    <result column="city_code" jdbcType="VARCHAR" property="cityCode" />
+    <result column="curio_city_id" jdbcType="BIGINT" property="curioCityId" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="scope" jdbcType="VARCHAR" property="scope" />
+    <result column="contact" jdbcType="VARCHAR" property="contact" />
+    <result column="domain" jdbcType="VARCHAR" property="domain" />
+    <result column="shop_hours" jdbcType="VARCHAR" property="shopHours" />
+    <result column="banner_id" jdbcType="VARCHAR" property="bannerId" />
+    <result column="avatar_id" jdbcType="VARCHAR" property="avatarId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="full_name" jdbcType="VARCHAR" property="fullName" />
+    <result column="visible" jdbcType="BIT" property="visible" />
+    <result column="brand_id" jdbcType="VARCHAR" property="brandId" />
+    <result column="wechat" jdbcType="VARCHAR" property="wechat" />
+    <result column="weibo" jdbcType="VARCHAR" property="weibo" />
+    <result column="stars" jdbcType="DOUBLE" property="stars" />
+    <result column="position" jdbcType="VARCHAR" property="position" />
+    <result column="slogans" jdbcType="VARCHAR" property="slogans" />
+    <result column="distribution" jdbcType="VARCHAR" property="distribution" />
+    <result column="signboards" jdbcType="VARCHAR" property="signboards" />
+    <result column="wechat_code" jdbcType="VARCHAR" property="wechatCode" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="deleted" jdbcType="BIT" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, region_id, city_code, curio_city_id, province, city, address, scope, contact, 
+    domain, shop_hours, banner_id, avatar_id, name, full_name, visible, brand_id, wechat, 
+    weibo, stars, position, slogans, distribution, signboards, wechat_code, status, create_time, 
+    update_time, deleted
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from shop
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from shop
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.jd.entity.user.Shop">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into shop (region_id, city_code, curio_city_id, 
+      province, city, address, 
+      scope, contact, domain, 
+      shop_hours, banner_id, avatar_id, 
+      name, full_name, visible, 
+      brand_id, wechat, weibo, 
+      stars, position, slogans, 
+      distribution, signboards, wechat_code, 
+      status, create_time, update_time, 
+      deleted)
+    values (#{regionId,jdbcType=VARCHAR}, #{cityCode,jdbcType=VARCHAR}, #{curioCityId,jdbcType=BIGINT}, 
+      #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
+      #{scope,jdbcType=VARCHAR}, #{contact,jdbcType=VARCHAR}, #{domain,jdbcType=VARCHAR}, 
+      #{shopHours,jdbcType=VARCHAR}, #{bannerId,jdbcType=VARCHAR}, #{avatarId,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR}, #{fullName,jdbcType=VARCHAR}, #{visible,jdbcType=BIT}, 
+      #{brandId,jdbcType=VARCHAR}, #{wechat,jdbcType=VARCHAR}, #{weibo,jdbcType=VARCHAR}, 
+      #{stars,jdbcType=DOUBLE}, #{position,jdbcType=VARCHAR}, #{slogans,jdbcType=VARCHAR}, 
+      #{distribution,jdbcType=VARCHAR}, #{signboards,jdbcType=VARCHAR}, #{wechatCode,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleted,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.jd.entity.user.Shop">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into shop
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="regionId != null">
+        region_id,
+      </if>
+      <if test="cityCode != null">
+        city_code,
+      </if>
+      <if test="curioCityId != null">
+        curio_city_id,
+      </if>
+      <if test="province != null">
+        province,
+      </if>
+      <if test="city != null">
+        city,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="scope != null">
+        scope,
+      </if>
+      <if test="contact != null">
+        contact,
+      </if>
+      <if test="domain != null">
+        domain,
+      </if>
+      <if test="shopHours != null">
+        shop_hours,
+      </if>
+      <if test="bannerId != null">
+        banner_id,
+      </if>
+      <if test="avatarId != null">
+        avatar_id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="fullName != null">
+        full_name,
+      </if>
+      <if test="visible != null">
+        visible,
+      </if>
+      <if test="brandId != null">
+        brand_id,
+      </if>
+      <if test="wechat != null">
+        wechat,
+      </if>
+      <if test="weibo != null">
+        weibo,
+      </if>
+      <if test="stars != null">
+        stars,
+      </if>
+      <if test="position != null">
+        position,
+      </if>
+      <if test="slogans != null">
+        slogans,
+      </if>
+      <if test="distribution != null">
+        distribution,
+      </if>
+      <if test="signboards != null">
+        signboards,
+      </if>
+      <if test="wechatCode != null">
+        wechat_code,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="deleted != null">
+        deleted,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="regionId != null">
+        #{regionId,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCode != null">
+        #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="curioCityId != null">
+        #{curioCityId,jdbcType=BIGINT},
+      </if>
+      <if test="province != null">
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="scope != null">
+        #{scope,jdbcType=VARCHAR},
+      </if>
+      <if test="contact != null">
+        #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="domain != null">
+        #{domain,jdbcType=VARCHAR},
+      </if>
+      <if test="shopHours != null">
+        #{shopHours,jdbcType=VARCHAR},
+      </if>
+      <if test="bannerId != null">
+        #{bannerId,jdbcType=VARCHAR},
+      </if>
+      <if test="avatarId != null">
+        #{avatarId,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="fullName != null">
+        #{fullName,jdbcType=VARCHAR},
+      </if>
+      <if test="visible != null">
+        #{visible,jdbcType=BIT},
+      </if>
+      <if test="brandId != null">
+        #{brandId,jdbcType=VARCHAR},
+      </if>
+      <if test="wechat != null">
+        #{wechat,jdbcType=VARCHAR},
+      </if>
+      <if test="weibo != null">
+        #{weibo,jdbcType=VARCHAR},
+      </if>
+      <if test="stars != null">
+        #{stars,jdbcType=DOUBLE},
+      </if>
+      <if test="position != null">
+        #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="slogans != null">
+        #{slogans,jdbcType=VARCHAR},
+      </if>
+      <if test="distribution != null">
+        #{distribution,jdbcType=VARCHAR},
+      </if>
+      <if test="signboards != null">
+        #{signboards,jdbcType=VARCHAR},
+      </if>
+      <if test="wechatCode != null">
+        #{wechatCode,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleted != null">
+        #{deleted,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.jd.entity.user.Shop">
+    update shop
+    <set>
+      <if test="regionId != null">
+        region_id = #{regionId,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCode != null">
+        city_code = #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="curioCityId != null">
+        curio_city_id = #{curioCityId,jdbcType=BIGINT},
+      </if>
+      <if test="province != null">
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="scope != null">
+        scope = #{scope,jdbcType=VARCHAR},
+      </if>
+      <if test="contact != null">
+        contact = #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="domain != null">
+        domain = #{domain,jdbcType=VARCHAR},
+      </if>
+      <if test="shopHours != null">
+        shop_hours = #{shopHours,jdbcType=VARCHAR},
+      </if>
+      <if test="bannerId != null">
+        banner_id = #{bannerId,jdbcType=VARCHAR},
+      </if>
+      <if test="avatarId != null">
+        avatar_id = #{avatarId,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="fullName != null">
+        full_name = #{fullName,jdbcType=VARCHAR},
+      </if>
+      <if test="visible != null">
+        visible = #{visible,jdbcType=BIT},
+      </if>
+      <if test="brandId != null">
+        brand_id = #{brandId,jdbcType=VARCHAR},
+      </if>
+      <if test="wechat != null">
+        wechat = #{wechat,jdbcType=VARCHAR},
+      </if>
+      <if test="weibo != null">
+        weibo = #{weibo,jdbcType=VARCHAR},
+      </if>
+      <if test="stars != null">
+        stars = #{stars,jdbcType=DOUBLE},
+      </if>
+      <if test="position != null">
+        position = #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="slogans != null">
+        slogans = #{slogans,jdbcType=VARCHAR},
+      </if>
+      <if test="distribution != null">
+        distribution = #{distribution,jdbcType=VARCHAR},
+      </if>
+      <if test="signboards != null">
+        signboards = #{signboards,jdbcType=VARCHAR},
+      </if>
+      <if test="wechatCode != null">
+        wechat_code = #{wechatCode,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleted != null">
+        deleted = #{deleted,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.jd.entity.user.Shop">
+    update shop
+    set region_id = #{regionId,jdbcType=VARCHAR},
+      city_code = #{cityCode,jdbcType=VARCHAR},
+      curio_city_id = #{curioCityId,jdbcType=BIGINT},
+      province = #{province,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      scope = #{scope,jdbcType=VARCHAR},
+      contact = #{contact,jdbcType=VARCHAR},
+      domain = #{domain,jdbcType=VARCHAR},
+      shop_hours = #{shopHours,jdbcType=VARCHAR},
+      banner_id = #{bannerId,jdbcType=VARCHAR},
+      avatar_id = #{avatarId,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      full_name = #{fullName,jdbcType=VARCHAR},
+      visible = #{visible,jdbcType=BIT},
+      brand_id = #{brandId,jdbcType=VARCHAR},
+      wechat = #{wechat,jdbcType=VARCHAR},
+      weibo = #{weibo,jdbcType=VARCHAR},
+      stars = #{stars,jdbcType=DOUBLE},
+      position = #{position,jdbcType=VARCHAR},
+      slogans = #{slogans,jdbcType=VARCHAR},
+      distribution = #{distribution,jdbcType=VARCHAR},
+      signboards = #{signboards,jdbcType=VARCHAR},
+      wechat_code = #{wechatCode,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      deleted = #{deleted,jdbcType=BIT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

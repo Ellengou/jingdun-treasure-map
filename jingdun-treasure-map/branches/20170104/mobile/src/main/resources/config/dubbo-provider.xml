@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://code.alibabatech.com/schema/dubbo
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<dubbo:application name="dubbo-backend-service" />
+
+	<bean id="configproperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="location" value="classpath:resource.properties"></property>
+	</bean>
+
+	<dubbo:registry protocol="zookeeper" address="#{configproperties.dubbo_address}" />
+	<!--<dubbo:registry address="multicast://224.5.6.7:1234" /> -->
+
+	<!-- 用dubbo协议在20880端口暴露服务 -->
+	<dubbo:protocol name="dubbo" port="20880" />
+
+	<dubbo:provider timeout="#{configproperties.dubbo_client_timeout}" />
+	
+	<!-- 声明需要暴露的服务接口-->
+
+</beans>

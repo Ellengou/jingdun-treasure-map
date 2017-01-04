@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd"
+	   default-lazy-init="false">
+
+	<description>Spring公共配置 </description>
+	<!-- 引入Spring的公用配置，包括数据源、注解解析和事务管理 -->
+	<import resource="classpath*:/config/spring-commons.xml"/>
+	<!-- 引入Spring的自定义的配置-->
+	<import resource="classpath*:/config/spring-customize.xml"/>
+
+	<!--<import resource="classpath*:/config/spring-mvc.xml"/>-->
+
+	<!-- 权限管理配置文件-->
+	<!-- <import resource="classpath*:/config/spring-security.xml"/> -->
+	
+	<!-- 后续 -->
+	<!-- spring quartz定时任务配置文件 -->
+	<!-- <import resource="classpath*:/config/spring-task.xml"/> -->
+	<!-- dubbo服务提供者配置文件 -->
+	<!-- <import resource="classpath*:/config/dubbo-provider.xml"/> -->
+	<!-- rabbitmq配置文件 -->
+	<!-- <import resource="classpath*:/config/spring-rabbitmq.xml"/>-->
+	
+</beans>
