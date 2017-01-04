@@ -31,9 +31,10 @@
         <property name="filterChainDefinitions">
             <value>
                 /login=anon <!-- 任何人都可以访问，匿名 -->
+                /**=anon
                 /image/code=anon
                 /basic/**=anon
-                /**=authc   <!-- 需要登录 -->
+                <!--/**=authc   &lt;!&ndash; 需要登录 &ndash;&gt;-->
             </value>
         </property>
     </bean>

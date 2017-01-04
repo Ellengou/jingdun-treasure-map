@@ -47,14 +47,14 @@
         WHERE
             a.deleted = FALSE
         <if test="param != null">
-            <if test="param.key !=null ">
+            <if test="param.key !=null and param.key != '' ">
                 AND  (
                 a.username LIKE CONCAT('%',#{param.key},'%')
                 OR
                 c.`name` LIKE CONCAT('%',#{param.key},'%')
                 )
             </if>
-            <if test="param.roleIds !=null ">
+            <if test="param.roleIds !=null and param.roleIds != ''">
                 AND c.id = #{param.roleIds}
             </if>
             <if test="param.username != null">

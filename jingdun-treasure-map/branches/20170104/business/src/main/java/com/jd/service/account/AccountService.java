@@ -31,6 +31,8 @@ public interface AccountService {
 
     public UserBase findBaseByUserId(Long id);
 
+    public List<Role> selectAllRoleList();
+
     public PageInfo<Role> selectAllRoles(Pager pager);
 
     public PageInfo<RolePermissionDto> selectRolePermissionByRoleId(Pager pager, Long roleId);

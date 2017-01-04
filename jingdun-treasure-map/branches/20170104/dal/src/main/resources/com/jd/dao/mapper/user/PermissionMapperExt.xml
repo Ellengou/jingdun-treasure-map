@@ -7,4 +7,25 @@
     update_time, deleted
   </sql>
 
+  <select id="findPermissionByRoleIds" resultMap="base">
+    SELECT
+        p.*
+    FROM
+        permission p
+    JOIN role_permission rp ON p.id = rp.permission_id
+    AND rp.role_id IN
+    <foreach collection="ids" item="id" open="(" separator="," close=")">
+       #{id}
+    </foreach>
+    AND p.deleted = FALSE
+  </select>
+
+  <select id="queryAllPermission" resultMap="base">
+    SELECT
+        GROUP_CONCAT(p.`code`)
+    FROM
+        permission p
+    WHERE p.deleted = FALSE
+  </select>
+
 </mapper>
