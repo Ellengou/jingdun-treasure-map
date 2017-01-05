@@ -118,13 +118,13 @@ public class HomeController extends BaseController {
         List<String> res = null;
         List<String> ros = new ArrayList();
         List<String> codes = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(roles)) {
-            List<Long> ids = new ArrayList();
-            roles.forEach(role -> ids.add(role.getId()));
-            roles.forEach(role -> ros.add(role.getValue()));
-            res = accountService.findResourceByRoleIds(ids);
-            codes = accountService.findResourceByRoleIds(ids);
-        }
+//        if (CollectionUtils.isNotEmpty(roles)) {
+//            List<Long> ids = new ArrayList();
+//            roles.forEach(role -> ids.add(role.getId()));
+//            roles.forEach(role -> ros.add(role.getValue()));
+//            res = accountService.findResourceByRoleIds(ids);
+//            codes = accountService.findResourceByRoleIds(ids);
+//        }
         storeSession(com.jd.account.Account.SESSION_KEY, account);
         storeSession(com.jd.account.Account.SESSION_MENU_KEY, codes);
         storeSession(com.jd.account.Account.SESSION_RESOURCE_KEY, res);

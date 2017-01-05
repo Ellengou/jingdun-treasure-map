@@ -67,4 +67,8 @@
         GROUP BY
         a.id
     </select>
+
+    <delete id="deleteByRoleId">
+        DELETE from role_permission WHERE role_id = #{roleId}
+    </delete>
 </mapper>

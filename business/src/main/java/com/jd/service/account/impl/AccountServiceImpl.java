@@ -62,7 +62,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account updateAccount(Account account) {
-        return accountMapper.updateByPrimaryKey(account) > 0 ? account : null;
+        return accountMapper.updateByPrimaryKeySelective(account) > 0 ? account : null;
     }
 
     @Override
@@ -159,7 +159,7 @@ public class AccountServiceImpl implements AccountService {
         Role role = mapper.map(dto, Role.class);
         List<Long> resources = dto.getPermissionIds();
         if (CollectionUtils.isNotEmpty(resources)) {
-            Ensure.that(rolePermissionMapperExt.deleteByRoleId(dto.getId())).isTrue("70001");
+            Ensure.that(rolePermissionMapperExt.deleteByRoleId(dto.getId())>0).isTrue("70001");
             for (int i = 0; i < resources.size(); i++) {
                 RolePermission roleResource = new RolePermission();
                 roleResource.setPermissionId(resources.get(i));

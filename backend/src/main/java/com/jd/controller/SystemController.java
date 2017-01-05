@@ -127,7 +127,7 @@ public class SystemController {
         Role role = accountService.findRoleById(roleId);
         Ensure.that(role).isNotNull("1013");
         RolesResponse response =  mapper.map(role, RolesResponse.class);
-        List<RoleMenuRoleResourceResponse>  roleResourceResponses = getRoleResourceList(roleId);
+        List<RoleMenuRoleResourceResponse>  roleResourceResponses = getRoleResourceList(role.getId());
         if (com.jd.core.utils.CollectionUtils.isNotEmpty(roleResourceResponses)) {
             List<Long> meuns = new ArrayList<>();
             List<Long> res = new ArrayList<>();
@@ -216,7 +216,7 @@ public class SystemController {
         Account res = new Account();
         res.setId(accountId);
         res.setDeleted(Boolean.TRUE);
-        Ensure.that(accountService.updateAccount(account));
+        Ensure.that(accountService.updateAccount(res));
         return new JsonResult();
     }
 
@@ -227,19 +227,18 @@ public class SystemController {
      * @param accountId
      * @return
      */
-    @RequestMapping(value = "/account/disable/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/account/{id}/disable/{enable}", method = RequestMethod.PUT)
     @ResponseBody
-    public JsonResult disableAccount(@PathVariable("id") Long accountId,Boolean locked) {
+    public JsonResult disableAccount(@PathVariable("id") Long accountId,@PathVariable("enable") Boolean enable) {
         Account account = accountService.findAccountById(accountId);
         Ensure.that(account).isNotNull("10000");
         Account res = new Account();
         res.setId(accountId);
-        res.setLocked(locked);
-        res.setLockTime(new Date());
-        if(locked)
-            Ensure.that(accountService.updateAccount(account)).isNotNull("1017");
+        res.setEnable(enable);
+        if(enable)
+            Ensure.that(accountService.updateAccount(res)).isNotNull("1017");
         else
-            Ensure.that(accountService.updateAccount(account)).isNotNull("1018");
+            Ensure.that(accountService.updateAccount(res)).isNotNull("1018");
         return new JsonResult();
     }
 
