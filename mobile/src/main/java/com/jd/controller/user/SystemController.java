@@ -1,19 +1,12 @@
 package com.jd.controller.user;
 
-import com.alibaba.fastjson.JSON;
-import com.github.pagehelper.PageInfo;
-import com.jd.common.mybatis.Pager;
 import com.jd.core.ensure.Ensure;
 import com.jd.dtos.TagDto;
 import com.jd.entity.user.Tag;
 import com.jd.face.JsonResult;
-import com.jd.face.Result;
-import com.jd.request.CommonRequest;
 import com.jd.request.TagRequest;
-import com.jd.response.MenusResponse;
 import com.jd.response.TagListResponse;
 import com.jd.response.TagResponse;
-import com.jd.response.UserResponse;
 import com.jd.service.account.AccountService;
 import com.jd.service.shop.PictureService;
 import com.jd.service.shop.ShopService;
@@ -23,12 +16,10 @@ import com.jd.utils.StringUtil;
 import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
