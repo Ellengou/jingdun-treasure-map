@@ -90,10 +90,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public PageInfo<EvaluationDto> queryEvaluationListByItemId(Pager pager, EvaluationDto evaluationDto) {
+    public PageInfo<EvaluationDto> queryEvaluationListByItemIdOrUserId(Pager pager, EvaluationDto evaluationDto) {
         if (pager != null)
             PageHelper.startPage(pager.getPageNum(), pager.getPageSize());
-        List<EvaluationDto> list = evaluationMapperExt.queryEvaluationListByItemId(evaluationDto);
+        List<EvaluationDto> list = evaluationMapperExt.queryEvaluationListByItemIdOrUserId(evaluationDto);
         return new PageInfo<>(list);
     }
 

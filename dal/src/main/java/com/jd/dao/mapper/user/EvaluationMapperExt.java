@@ -9,7 +9,7 @@ public interface EvaluationMapperExt extends EvaluationMapper {
 
     List<EvaluationDto> queryEvaluationListByCurioId(@Param("param") EvaluationDto evaluationDto);
 
-    List<EvaluationDto> queryEvaluationListByItemId(@Param("param") EvaluationDto evaluationDto);
+    List<EvaluationDto> queryEvaluationListByItemIdOrUserId(@Param("param") EvaluationDto evaluationDto);
 
     List<EvaluationDto> queryEvaluationListByShopId(@Param("param") EvaluationDto evaluationDto);
 }

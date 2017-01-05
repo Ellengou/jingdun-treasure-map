@@ -90,35 +90,4 @@ public class ItemController {
         return new JsonResult(pager, DozerUtils.maps(evaluationDtoPageInfo.getList(), EevaluationListResponse.class));
     }
 
-    /**
-     * 商品评价
-     *
-     * @param request
-     * @return
-     */
-    @RequestMapping(value = "/eval", method = RequestMethod.POST)
-    @ResponseBody
-    public JsonResult itemEvaluation(@RequestBody CommonRequest<EvaluationRequest> request) {
-        EvaluationRequest evaluationRequest = request.getParam(EvaluationRequest.class);
-        Ensure.that(evaluationRequest).isNotNull("50002");
-        Ensure.that(evaluationRequest.getContent()).isNotNull("50002");
-        Evaluation evaluation = mapper.map(evaluationRequest, Evaluation.class);
-        evaluation.setContent(WordFilter.check(evaluationRequest.getContent()));
-        Evaluation result = itemService.saveEvaluation(evaluation);
-        Ensure.that(result).isNotNull("50001");
-        Picture picture = new Picture();
-        picture.setForeignId(result.getId());
-        String[] views = evaluationRequest.getViews();
-        if (ArrayUtils.isNotEmpty(views))
-            for (String path : views) {
-                if (StringUtil.trimToNull(path) == null)
-                    break;
-                picture.setPictureType(BusinessType.PictureType.EVAL.name());
-                picture.setName(FileUtil.getFilename(path));
-                picture.setPath(path);
-                Ensure.that(pictureService.savePicture(picture)).isNotNull("50000");
-            }
-        return new JsonResult();
-    }
-
 }

@@ -97,23 +97,4 @@ public class UserController {
         return new JsonResult();
     }
 
-    public static void main(String[] args) {
-        UserListResponse response = new UserListResponse();
-        response.setLocked(true);
-        response.setLockTime(new Date());
-        response.setId(3l);
-        response.setStatus("2");
-        response.setAddress("莲花池");
-        response.setCreatedTime(new Date());
-        response.setKey("");
-        response.setMobile("189182731");
-        response.setNickName("花湖");
-        response.setMajor("本科");
-        response.setUserBanner("头像地址");
-
-        List<UserListResponse> listResponses = new ArrayList<>();
-        listResponses.add(response);
-        System.out.print(JSON.toJSONString(listResponses));
-    }
-
 }
