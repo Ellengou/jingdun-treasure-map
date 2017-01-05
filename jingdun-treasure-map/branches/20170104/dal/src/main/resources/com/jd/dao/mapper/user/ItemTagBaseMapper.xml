@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jd.dao.mapper.user.ItemTagBaseMapper" >
+  <resultMap id="BaseResultMap" type="com.jd.entity.user.ItemTagBase" >
+    <result column="item_tag_id" property="itemTagId" jdbcType="BIGINT" />
+    <result column="item_id" property="itemId" jdbcType="BIGINT" />
+  </resultMap>
+  <insert id="insert" parameterType="com.jd.entity.user.ItemTagBase" >
+    insert into item_tag_base (item_tag_id, item_id)
+    values (#{itemTagId,jdbcType=BIGINT}, #{itemId,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.jd.entity.user.ItemTagBase" >
+    insert into item_tag_base
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="itemTagId != null" >
+        item_tag_id,
+      </if>
+      <if test="itemId != null" >
+        item_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="itemTagId != null" >
+        #{itemTagId,jdbcType=BIGINT},
+      </if>
+      <if test="itemId != null" >
+        #{itemId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+</mapper>
