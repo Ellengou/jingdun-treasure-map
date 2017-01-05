@@ -1,6 +1,5 @@
 package com.jd.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
 import com.jd.common.mybatis.Pager;
 import com.jd.core.ensure.Ensure;
@@ -19,9 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by renchao on 2017/1/5.
@@ -40,7 +37,7 @@ public class UserController {
     String DEFEAUT_PASS;
 
     /**
-     * 店铺列表 分頁
+     * 用户列表 分頁
      *
      * @param request
      * @return
