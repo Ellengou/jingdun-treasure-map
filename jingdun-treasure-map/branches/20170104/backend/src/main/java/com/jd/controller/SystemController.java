@@ -348,7 +348,8 @@ public class SystemController {
         TagDto dto = null;
         if (tagRequest != null)
             dto = mapper.map(tagRequest, TagDto.class);
-        return new JsonResult(pager, DozerUtils.maps(shopService.queryTagList(pager, dto), TagResponse.class));
+        PageInfo<Tag> pageInfo = shopService.queryTagList(null, dto);
+        return new JsonResult(pager, DozerUtils.maps(pageInfo.getList(), TagResponse.class));
     }
 
 
@@ -365,7 +366,8 @@ public class SystemController {
         TagDto dto = null;
         if (tagRequest != null)
             dto = mapper.map(tagRequest, TagDto.class);
-        return new JsonResult(DozerUtils.maps(shopService.queryTagList(null, dto), TagResponse.class));
+        PageInfo<Tag> pageInfo = shopService.queryTagList(null, dto);
+        return new JsonResult(DozerUtils.maps(pageInfo.getList(), TagResponse.class));
     }
 
     /**

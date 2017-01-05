@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface ShopService {
 
-    List<Tag> queryTagList(Pager pager, TagDto tag);
+    PageInfo<Tag> queryTagList(Pager pager, TagDto tag);
 
     Boolean delTagById(Long id);
 

@@ -178,7 +178,10 @@ public class ShopController extends BaseController {
         TagDto dto = null;
         if (tagRequest != null)
             dto = mapper.map(tagRequest, TagDto.class);
-        return new JsonResult(pager, DozerUtils.maps(shopService.queryTagList(pager, dto), TagResponse.class));
+        PageInfo<Tag> pageInfo =  shopService.queryTagList(pager, dto);
+        if (pager != null)
+            pager = new Pager(pager.getPageNum(), pager.getPageSize(), pageInfo.getTotal());
+        return new JsonResult(pager, DozerUtils.maps(pageInfo.getList(), TagResponse.class));
     }
 
     /**

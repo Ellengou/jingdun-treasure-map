@@ -1,5 +1,6 @@
 package com.jd.controller.user;
 
+import com.github.pagehelper.PageInfo;
 import com.jd.core.ensure.Ensure;
 import com.jd.dtos.TagDto;
 import com.jd.entity.user.Tag;
@@ -79,12 +80,13 @@ public class SystemController extends BaseController {
             dto = mapper.map(tagRequest, TagDto.class);
             dto.setKey(StringUtil.trimToNull(dto.getKey()));
         }
-        List<Tag> sysTagList = shopService.queryTagList(null, dto);
+        PageInfo<Tag> pageInfo = shopService.queryTagList(null, dto);
+        List<Tag> sysTagList = pageInfo.getList();
         List<Tag> userTagList = null;
         if (getLoginUserId() != null)
             userTagList = shopService.queryUserTagList(dto, getLoginUserId());
         TagListResponse tagListResponse = new TagListResponse();
-        if (CollectionUtils.isNotEmpty(sysTagList)) {
+        if (CollectionUtils.isNotEmpty(pageInfo.getList())) {
             if (CollectionUtils.isNotEmpty(userTagList)) {
                 sysTagList = (List<Tag>) CollectionUtils.removeAll(sysTagList, userTagList);
                 tagListResponse.setUserTags(DozerUtils.maps(userTagList, TagResponse.class));

@@ -3,16 +3,16 @@
 <mapper namespace="com.jd.dao.mapper.user.TagMapperExt">
     <resultMap id="base" type="com.jd.entity.user.Tag" extends="com.jd.dao.mapper.user.TagMapper.BaseResultMap"/>
     <sql id="column_List">
-    id,
-	parent_id,
-	`name`,
-	banner_id,
-	`desc`,
-	sequence,
-	visible,
-	create_time,
-	update_time,
-	deleted
+        id,
+        parent_id,
+        `name`,
+        banner_id,
+        `desc`,
+        sequence,
+        visible,
+        create_time,
+        update_time,
+        deleted
   </sql>
 
     <select id="queryTagList" resultMap="base">
@@ -21,8 +21,8 @@
         FROM tag
         WHERE deleted = FALSE
         <if test="param != null">
-            <if test="param.key != null">
-                AND name = #{param.key}
+            <if test="param.key != null and param.key != ''">
+                AND name LIKE CONCAT('%',#{param.key},'%')
             </if>
             <if test="param.businessId != null">
                 AND EXISTS (SELECT 1 FROM shop_tag WHERE shop_id = #{param.businessId})

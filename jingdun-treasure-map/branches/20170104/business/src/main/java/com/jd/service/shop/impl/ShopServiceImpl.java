@@ -44,8 +44,11 @@ public class ShopServiceImpl implements ShopService {
     EvaluationMapperExt evaluationMapperExt;
 
     @Override
-    public List<Tag> queryTagList(Pager pager, TagDto tag) {
-        return tagMapperExt.queryTagList(tag);
+    public PageInfo<Tag> queryTagList(Pager pager, TagDto tag) {
+        if (pager != null)
+            PageHelper.startPage(pager.getPageNum(), pager.getPageSize());
+        List<Tag> list = tagMapperExt.queryTagList(tag);
+        return new PageInfo<>(list);
     }
 
     @Override
