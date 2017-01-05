@@ -3,14 +3,8 @@ package com.jd;
 /**
  * Created by ellen on 2016/12/27.
  */
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.SocketException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
+import com.alibaba.fastjson.JSON;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -30,7 +24,13 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.fastjson.JSON;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class HttpClientUtils {
     private final static Logger LOGGER = LoggerFactory.getLogger(HttpClientUtils.class);

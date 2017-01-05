@@ -70,7 +70,7 @@
                     <connectors>
                         <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
                             <!--jetty启动端口号 -->
-                            <port>8081</port>
+                            <port>8888</port>
                         </connector>
                     </connectors>
                 </configuration>

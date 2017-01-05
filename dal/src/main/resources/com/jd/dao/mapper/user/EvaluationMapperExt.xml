@@ -19,7 +19,16 @@
         u.user_name,
         u.nick_name,
         u.mobile,
-        GROUP_CONCAT(p.path)views
+        GROUP_CONCAT(p.path)views,
+        (
+          SELECT
+          p1.path
+          FROM
+          picture p1
+          WHERE
+          p1.foreign_id = u.id
+          AND p1.picture_type = "USER_BANNER"
+        )userBanner
     FROM
         evaluation e
     JOIN item i ON e.business_id = i.id AND i.deleted = FALSE
@@ -60,7 +69,16 @@
           u.user_name,
           u.nick_name,
           u.mobile,
-          GROUP_CONCAT(p.path)views
+          GROUP_CONCAT(p.path)views,
+          (
+              SELECT
+              p1.path
+              FROM
+              picture p1
+              WHERE
+              p1.foreign_id = u.id
+              AND p1.picture_type = "USER_BANNER"
+          )userBanner
       FROM
           evaluation e
       JOIN item i ON e.business_id = i.id AND i.deleted = FALSE
@@ -97,7 +115,16 @@
           u.user_name,
           u.nick_name,
           u.mobile,
-          GROUP_CONCAT(p.path)views
+          GROUP_CONCAT(p.path)views,
+          (
+              SELECT
+              p1.path
+              FROM
+              picture p1
+              WHERE
+              p1.foreign_id = u.id
+              AND p1.picture_type = "USER_BANNER"
+          )userBanner
       FROM
           evaluation e
       JOIN item i ON e.business_id = i.id AND i.deleted = FALSE

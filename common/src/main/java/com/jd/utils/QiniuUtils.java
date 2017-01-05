@@ -21,10 +21,7 @@ import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -57,6 +54,8 @@ public abstract class QiniuUtils {
     private static UploadManager uploadManager = new UploadManager();
 
     private static int LIMIT_SIZE = 1000;
+
+    private static String QINIU_MIME = "multipart/form-data";
 
     static {
         QINIU_BUCKET = "jingdun";
@@ -251,7 +250,7 @@ public abstract class QiniuUtils {
         String token;
         token = auth.uploadToken(QINIU_BUCKET);
         byte[] byteData = IOUtils.toByteArray(inputStream);
-        Response response = uploadManager.put(byteData, mac.secretKey, token, null, null, false);
+        Response response = uploadManager.put(byteData, mac.secretKey, token, null, QINIU_MIME, false);
         inputStream.close();
         return response.bodyString();
     }
@@ -488,6 +487,91 @@ public abstract class QiniuUtils {
         return (listing.items)[0];
     }
 
+
+    /**
+     * 从 inputstream 中写入七牛
+     *
+     * @param key     文件名
+     * @param content 要写入的内容
+     * @return
+     * @throws AuthException
+     * @throws JSONException
+     */
+    public static String uploadFile(String key, String content) throws AuthException, JSONException {
+        // 读取的时候按的二进制，所以这里要同一
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(content.getBytes());
+
+        String uptoken = getUpToken();
+
+        // 可选的上传选项，具体说明请参见使用手册。
+        PutExtra extra = new PutExtra();
+
+        // 上传文件
+        PutRet ret = IoApi.Put(uptoken, key, inputStream, extra);
+
+        if (ret.ok()) {
+            return ret.getResponse();
+        } else {
+            return null;
+        }
+    }
+
+    //通过文件路径上传文件
+    public static String uploadFile(String localFile) throws Exception {
+        File file = new File(localFile);
+        return uploadFile(file);
+    }
+
+    //通过File上传
+    public static String uploadFile(File file) throws Exception {
+        String uptoken = getUpToken();
+
+        // 可选的上传选项，具体说明请参见使用手册。
+        PutExtra extra = new PutExtra();
+
+        // 上传文件
+        PutRet ret = IoApi.putFile(uptoken, file.getName(), file.getAbsolutePath(), extra);
+
+        if (ret.ok()) {
+            return getFileUrl(ret.getKey());
+        } else {
+            return null;
+        }
+    }
+
+
+    //获得下载地址
+    public static String getDownloadFileUrl(String filename) throws Exception {
+        String baseUrl = URLUtils.makeBaseUrl(QINIU_DOMAIN, filename);
+        GetPolicy getPolicy = new GetPolicy();
+        String downloadUrl = getPolicy.makeRequest(baseUrl, mac);
+        return downloadUrl;
+    }
+
+    //获得圖片地址
+    public static String getFileUrl(String filename) throws Exception {
+        String baseUrl = URLUtils.makeBaseUrl(QINIU_DOMAIN, filename);
+        return baseUrl;
+    }
+
+    //删除文件
+    public static void deleteFile(String filename) {
+        RSClient client = new RSClient(mac);
+        client.delete(QINIU_DOMAIN, filename);
+    }
+
+    //获取凭证
+    private static String getUpToken() throws AuthException, JSONException {
+        PutPolicy putPolicy = new PutPolicy(QINIU_DOMAIN);
+        String uptoken = putPolicy.token(mac);
+        return uptoken;
+    }
+
+    private Mac getMac() {
+        Mac mac = new Mac(Config.ACCESS_KEY, Config.SECRET_KEY);
+        return mac;
+    }
+
     /**
      * @param @param  key
      * @param @return
@@ -502,34 +586,44 @@ public abstract class QiniuUtils {
 
     public static void main(String[] args) throws AuthException, JSONException, EncoderException, IOException {
         String file = "/Users/ellengou/Downloads/IMG_0772.JPG";
+        FileInputStream inputStream = new FileInputStream(new File(file));
 
-        boolean ok = upload(QINIU_BUCKET, mac.secretKey, file);
+        String ok = uploadFile(inputStream);
+        try {
+            ok = getDownloadFileUrl("IMG_0772.JPG");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         System.out.println("====================== upload =============== :  " + ok);
 
-
-        String url = download(QINIU_DOMAIN, mac.secretKey);
-        System.out.println("------------------download  -----------------------:     " + url);
-
-
-        String response = uploadFile("/Users/ellengou/Downloads/", "IMG_0769.JPG", QINIU_BUCKET);
-        System.out.println("===================  uploadFile 上傳結果為======== :     " + response);
-
-        String[] buckets = new String[0];
-        buckets = listBucket();
-        System.out.println("######################## listBucket start ###########################");
-        for (String bucket : buckets) {
-            System.out.println(bucket);
-        }
-        System.out.println("######################## listBucket start ###########################");
-        System.out.println();
-        System.out.println("######################## listBucket start ###########################");
-        List<FileInfo> list = listFileOfBucket(QINIU_BUCKET, null, 10000);
-        for (FileInfo fileInfo : list) {
-            System.out.println("key：" + fileInfo.key);
-            System.out.println("hash：" + fileInfo.hash);
-            System.out.println("................");
-        }
-        System.out.println("######################## listBucket end ###########################");
+//        boolean ok = upload(QINIU_BUCKET, mac.secretKey, file);
+//        System.out.println("====================== upload =============== :  " + ok);
+//
+//
+//        String url = download(QINIU_DOMAIN, mac.secretKey);
+//        System.out.println("------------------download  -----------------------:     " + url);
+//
+//
+//        String response = uploadFile("/Users/ellengou/Downloads/", "IMG_0769.JPG", QINIU_BUCKET);
+//        System.out.println("===================  uploadFile 上傳結果為======== :     " + response);
+//
+//        String[] buckets = new String[0];
+//        buckets = listBucket();
+//        System.out.println("######################## listBucket start ###########################");
+//        for (String bucket : buckets) {
+//            System.out.println(bucket);
+//        }
+//        System.out.println("######################## listBucket start ###########################");
+//        System.out.println();
+//        System.out.println("######################## listBucket start ###########################");
+//        List<FileInfo> list = listFileOfBucket(QINIU_BUCKET, null, 10000);
+//        for (FileInfo fileInfo : list) {
+//            System.out.println("key：" + fileInfo.key);
+//            System.out.println("hash：" + fileInfo.hash);
+//            System.out.println("................");
+//        }
+//        System.out.println("######################## listBucket end ###########################");
 
 //        copyFile(QINIU_BUCKET,  mac.secretKey, QINIU_BUCKET_TEST, mac.secretKey);
 
@@ -537,18 +631,18 @@ public abstract class QiniuUtils {
 
 //        deleteFile(QINIU_BUCKET, "images-test-2222.jpg");
 
-        fetchToBucket("http://www.nanrenwo.net/uploads/allimg/121026/14-1210261JJD03.jpg", QINIU_BUCKET, "test2.jpg");
-        fetchToBucket("http://pic1.win4000.com/pic/d/bf/320f1209099.jpg", QINIU_BUCKET_TEST, "test3.jpg");
+//        fetchToBucket("http://www.nanrenwo.net/uploads/allimg/121026/14-1210261JJD03.jpg", QINIU_BUCKET, "test2.jpg");
+//        fetchToBucket("http://pic1.win4000.com/pic/d/bf/320f1209099.jpg", QINIU_BUCKET_TEST, "test3.jpg");
 
 
-        FileInfo[] fileInfos = new FileInfo[0];
-        fileInfos = findFiles(QINIU_BUCKET, "", 1000000);
-
-        System.out.println("..............findFiles  start..................... ");
-        for (FileInfo fileInfo : fileInfos) {
-            System.out.println(fileInfo.key);
-            System.out.println(fileInfo.hash);
-        }
-        System.out.println("..............findFiles  end ..................... ");
+//        FileInfo[] fileInfos = new FileInfo[0];
+//        fileInfos = findFiles(QINIU_BUCKET, "", 1000000);
+//
+//        System.out.println("..............findFiles  start..................... ");
+//        for (FileInfo fileInfo : fileInfos) {
+//            System.out.println(fileInfo.key);
+//            System.out.println(fileInfo.hash);
+//        }
+//        System.out.println("..............findFiles  end ..................... ");
     }
 }
