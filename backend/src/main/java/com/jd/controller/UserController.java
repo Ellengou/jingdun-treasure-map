@@ -80,6 +80,24 @@ public class UserController {
     }
 
     /**
+     * 用户删除
+     *
+     * @param userId
+     * @return
+     */
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public JsonResult deleteUserAccount(@PathVariable("id") Long userId) {
+        User user = userService.findUserById(userId);
+        Ensure.that(user).isNotNull("USER_10001");
+        UserDto res = new UserDto();
+        res.setId(userId);
+        res.setDeleted(Boolean.TRUE);
+        Ensure.that(userService.updateUserInfo(res)).isTrue("USER_1021");
+        return new JsonResult();
+    }
+
+    /**
      * 重置密码
      *
      * @param userId
