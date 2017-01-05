@@ -59,6 +59,16 @@ public class UserDto implements Serializable{
 
     private String status;
 
+    private String tagName;
+
+    public String getTagName() {
+        return tagName;
+    }
+
+    public void setTagName(String tagName) {
+        this.tagName = tagName;
+    }
+
     public Long getTagId() {
         return tagId;
     }
