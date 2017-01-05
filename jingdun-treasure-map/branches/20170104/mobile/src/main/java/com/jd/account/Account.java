@@ -8,6 +8,7 @@ package com.jd.account;
  */
 public class Account extends com.jd.entity.user.Account{
 
+    private static final long serialVersionUID = -5392919016235785223L;
     public static String SESSION_USER_BASE = "_session_user_base_";
     public static String SESSION_KEY = "_session_key_";
 

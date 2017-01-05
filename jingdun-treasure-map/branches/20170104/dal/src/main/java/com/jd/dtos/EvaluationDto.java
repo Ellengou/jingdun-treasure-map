@@ -48,6 +48,16 @@ public class EvaluationDto implements Serializable{
 
     private String views;
 
+    private String userBanner;
+
+    public String getUserBanner() {
+        return userBanner;
+    }
+
+    public void setUserBanner(String userBanner) {
+        this.userBanner = userBanner;
+    }
+
     public String getViews() {
         return views;
     }

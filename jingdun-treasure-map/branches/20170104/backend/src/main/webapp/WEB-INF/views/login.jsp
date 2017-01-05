@@ -22,7 +22,7 @@
 //                var url = "/pigs/basic/retail/9";
 //                var url = "/basic/retail/add";
             var base = "http://127.0.0.1:8081";
-            var url = "/basic/account/disable/1";
+            var url = "/basic/role";
 //            var url = "/login";
             var certCode = $("#certCode").val();
 //                var data = {"userName": '李四', "password": '123456',"issuingUnit":certCode,
@@ -35,9 +35,16 @@
 //                    "password": 'e10adc3949ba59abbe56e057f20f883e',
 //                    "imageCode": certCode
 //                }};
-            var data = {"locked":"true"};
+            var data = {
+                "param": {
+                    "name": "",
+                    "description": "hahsdghahdg",
+                    "meunIds": [1, 8],
+                    "resourceIds": [2, 5]
+                }
+            };
             $.ajax({
-                type: 'put',
+                type: 'post',
                 url: url,
                 contentType: 'application/json',
                 dataType: 'json',
@@ -50,7 +57,8 @@
                     alert("异常！");
                 }
             });
-        };
+        }
+        ;
 
         $(function () {
             $("#codePic").bind('click', function () {
@@ -70,7 +78,7 @@
     </div>
 
     <center>
-        <form action="" method="post"/>
+        <form action="/file-image/upload" method="post" enctype="multipart/form-data"/>
         用户名：
         <input type="text" id="username"/>
         密&nbsp;&nbsp;码：
@@ -78,7 +86,14 @@
         &nbsp;验证码：
         <input type="text" id="certCode"/>
         <img id="codePic"><a href="javascript:getPic()">看不清，换一张 </a></img>
-        <input type="submit" value="登录"/>
+        <br/>
+        <br/>
+        <br/>
+        <hr/>
+        <br/><br/><br/>
+
+        <input name="file" type="file"/>
+        <input type="submit" value="上传"/>
         </form>
     </center>
 

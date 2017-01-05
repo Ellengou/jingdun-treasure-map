@@ -87,4 +87,14 @@
         <property name="suffix" value=".jsp"/>                 <!-- 模板文件的后缀-->
     </bean>
 
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- set the max upload size201MB -->
+        <property name="maxUploadSize">
+            <value>210763776</value>
+        </property>
+        <property name="maxInMemorySize">
+            <value>4096</value>
+        </property>
+    </bean>
+
 </beans>

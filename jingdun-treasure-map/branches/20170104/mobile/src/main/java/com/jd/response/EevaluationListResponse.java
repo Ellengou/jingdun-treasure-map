@@ -1,5 +1,6 @@
 package com.jd.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jd.core.utils.StringUtils;
 
 import java.io.Serializable;
@@ -14,12 +15,15 @@ import java.util.Date;
 public class EevaluationListResponse implements Serializable {
 
     private static final long serialVersionUID = 2965439681340753654L;
+
     private Long id;
 
     private Long userId;
 
+    @JsonIgnore
     private String type;
 
+    @JsonIgnore
     private Long businessId;
 
     private Double stars;
@@ -30,12 +34,15 @@ public class EevaluationListResponse implements Serializable {
 
     private Date updateTime;
 
+    @JsonIgnore
     private Boolean deleted;
 
     private Long curioCityId;
 
+    @JsonIgnore
     private Long shopId;
 
+    @JsonIgnore
     private Long itemId;
 
     private String nickName;
@@ -48,9 +55,20 @@ public class EevaluationListResponse implements Serializable {
 
     private Long support;
 
+    @JsonIgnore
     private String views;
 
     private String[] view;
+
+    private String userBanner;
+
+    public String getUserBanner() {
+        return userBanner;
+    }
+
+    public void setUserBanner(String userBanner) {
+        this.userBanner = userBanner;
+    }
 
     public String[] getView() {
         if (StringUtils.isNotBlank(views) && views.contains(","))

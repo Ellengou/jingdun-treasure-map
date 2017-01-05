@@ -10,6 +10,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -70,7 +71,8 @@ public class SimpleHttpClientDemo {
     }
 
 
-    public static void main(String[] args) throws ParseException, IOException {
+    @Test
+    public  void test() throws ParseException, IOException {
         String url="http://php.weather.sina.com.cn/iframe/index/w_cl.php";
         Map<String, String> map = new HashMap<String, String>();
         map.put("code", "js");
