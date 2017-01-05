@@ -103,7 +103,7 @@
       e.id
   </select>
 
-  <select id="queryEvaluationListByItemId" resultType="com.jd.dtos.EvaluationDto">
+  <select id="queryEvaluationListByItemIdOrUserId" resultType="com.jd.dtos.EvaluationDto">
       SELECT
           e.content,
           e.create_time,

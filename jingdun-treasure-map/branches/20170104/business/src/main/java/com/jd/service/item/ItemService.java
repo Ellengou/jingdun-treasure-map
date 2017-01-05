@@ -31,7 +31,7 @@ public interface ItemService {
 
     Item updateItem(Item item);
 
-    PageInfo<EvaluationDto> queryEvaluationListByItemId(Pager pager, EvaluationDto evaluationDto);
+    PageInfo<EvaluationDto> queryEvaluationListByItemIdOrUserId(Pager pager, EvaluationDto evaluationDto);
 
     Evaluation saveEvaluation(Evaluation evaluation);
 }

@@ -380,7 +380,7 @@ public class SystemController {
     @ResponseBody
     public JsonResult saveOrUpdateTag(@RequestBody CommonRequest<TagRequest> request) {
         TagRequest tagRequest = request.getParam(TagRequest.class);
-        Ensure.that(tagRequest).isNotNull("");
+        Ensure.that(tagRequest).isNotNull("10000");
         Tag tag = mapper.map(tagRequest, Tag.class);
         Ensure.that(tag).isNotNull("10000");
         Boolean res;
