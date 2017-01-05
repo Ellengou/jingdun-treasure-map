@@ -48,7 +48,7 @@ public class SystemController {
     @Autowired
     ShopService shopService;
 
-    @Value("{defeaut_pass}")
+    @Value("${defeaut_pass}")
     String DEFEAUT_PASS;
 
 
