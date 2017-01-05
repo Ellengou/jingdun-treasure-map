@@ -211,6 +211,7 @@ public class AccountServiceImpl implements AccountService {
         Account account = new Account();
         account.setId(id);
         account.setPassword(password);
+        account.setInitPassword(Boolean.FALSE);
         return accountMapper.updateByPrimaryKeySelective(account) > 0;
     }
 

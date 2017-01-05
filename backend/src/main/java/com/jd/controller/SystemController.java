@@ -16,9 +16,11 @@ import com.jd.service.shop.PictureService;
 import com.jd.service.shop.ShopService;
 import com.jd.utils.CollectionUtils;
 import com.jd.utils.DozerUtils;
+import com.jd.utils.MD5Utils;
 import com.jd.utils.StringUtil;
 import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,6 +47,9 @@ public class SystemController {
 
     @Autowired
     ShopService shopService;
+
+    @Value("{defeaut_pass}")
+    String DEFEAUT_PASS;
 
 
     /**
@@ -240,6 +245,21 @@ public class SystemController {
             Ensure.that(accountService.updateAccount(res)).isNotNull("1017");
         else
             Ensure.that(accountService.updateAccount(res)).isNotNull("1018");
+        return new JsonResult();
+    }
+
+    /**
+     * 重置密码
+     *
+     * @param accountId
+     * @return
+     */
+    @RequestMapping(value = "/account/{id}/pwd", method = RequestMethod.PUT)
+    @ResponseBody
+    public JsonResult resetPassword(@PathVariable("id") Long accountId) {
+        Account account = accountService.findAccountById(accountId);
+        Ensure.that(account).isNotNull("1021");
+        Ensure.that(accountService.updatePassword(accountId,MD5Utils.MD5(DEFEAUT_PASS))).isTrue("1020");
         return new JsonResult();
     }
 
