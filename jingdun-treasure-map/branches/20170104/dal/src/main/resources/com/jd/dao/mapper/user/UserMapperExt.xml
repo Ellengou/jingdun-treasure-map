@@ -41,12 +41,12 @@
 
   <select id="queryUserListPage" resultType="com.jd.dtos.UserDto">
       SELECT
-          a.user_name,
-          a.nick_name,
+          a.user_name userName,
+          a.nick_name nickName,
           a.mobile,
-          a.created_time,
+          a.created_time createdTime,
           a.locked,
-          a.lock_time,
+          a.lock_time lockTime,
           a.id,
           a.address,
           GROUP_CONCAT(c.`name`) tagName
