@@ -2,6 +2,7 @@ package com.jd.service.account;
 
 import com.github.pagehelper.PageInfo;
 import com.jd.common.mybatis.Pager;
+import com.jd.dtos.AccountDto;
 import com.jd.dtos.AccountListDto;
 import com.jd.dtos.RoleDto;
 import com.jd.dtos.RolePermissionDto;
@@ -21,9 +22,9 @@ public interface AccountService {
 
     public Account findAccountByUserId(Long userId);
 
-    public Account updateAccount(Account account);
+    public Account updateAccount(AccountDto account);
 
-    public Account saveAccount(Account account);
+    public Account saveAccount(AccountDto account);
 
     public List<Role> findRoleByAccountId(Long id);
 
@@ -53,7 +54,7 @@ public interface AccountService {
 
     Account findAccountById(Long accountId);
 
-    PageInfo<AccountListDto> selectAccountList(Pager pager, Account account);
+    PageInfo<AccountListDto> selectAccountList(Pager pager, AccountDto account);
 
     Boolean updatePassword(Long id, String password);
 

@@ -1,5 +1,6 @@
 package com.jd.dao.mapper.user;
 
+import com.jd.dtos.AccountDto;
 import com.jd.dtos.AccountListDto;
 import com.jd.entity.user.Account;
 import org.apache.ibatis.annotations.Param;
@@ -15,7 +16,7 @@ public interface AccountMapperExt extends AccountMapper {
 
     Account findDetailByUserId(@Param("userId") Long userId);
 
-    List<AccountListDto> selectAccountList(@Param("param") Account account);
+    List<AccountListDto> selectAccountList(@Param("param") AccountDto account);
 
     Account findBusinessByAccount(@Param("name") String username);
 

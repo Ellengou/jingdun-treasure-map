@@ -3,25 +3,20 @@ package com.jd.controller;
 import com.github.pagehelper.PageInfo;
 import com.jd.common.mybatis.Pager;
 import com.jd.core.ensure.Ensure;
-import com.jd.dtos.AccountListDto;
-import com.jd.dtos.RoleDto;
-import com.jd.dtos.RolePermissionDto;
-import com.jd.dtos.TagDto;
+import com.jd.dtos.*;
 import com.jd.entity.user.Account;
 import com.jd.entity.user.Permission;
 import com.jd.entity.user.Role;
 import com.jd.entity.user.Tag;
 import com.jd.face.JsonResult;
-import com.jd.request.AccountListRequest;
-import com.jd.request.CommonRequest;
-import com.jd.request.RoleRequest;
-import com.jd.request.TagRequest;
+import com.jd.request.*;
 import com.jd.response.*;
 import com.jd.service.account.AccountService;
 import com.jd.service.shop.PictureService;
 import com.jd.service.shop.ShopService;
 import com.jd.utils.CollectionUtils;
 import com.jd.utils.DozerUtils;
+import com.jd.utils.StringUtil;
 import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -173,7 +168,7 @@ public class SystemController {
     @ResponseBody
     public JsonResult findAccount(@RequestBody CommonRequest<AccountListRequest> request) {
         Pager pager = request.getPager();
-        Account account = request.getParam(AccountListRequest.class) != null ? (mapper.map(request.getParam(AccountListRequest.class), Account.class)) : null;
+        AccountDto account = request.getParam(AccountListRequest.class) != null ? (mapper.map(request.getParam(AccountListRequest.class), AccountDto.class)) : null;
         PageInfo<AccountListDto> pageInfo = accountService.selectAccountList(pager, account);
         List<AccountResponse> responses = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(pageInfo.getList()))
@@ -192,10 +187,11 @@ public class SystemController {
      */
     @RequestMapping(value = "/account", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult saveAndUpdateAccount(@RequestBody CommonRequest<Account> request) {
-        Account account = request.getParam(Account.class);
-        Ensure.that(account).isNotNull("10000");
-        if (account.getId() != null)
+    public JsonResult saveAndUpdateAccount(@RequestBody CommonRequest<AccountSaveRequest> request) {
+        AccountSaveRequest accountSaveRequest = request.getParam(AccountSaveRequest.class);
+        Ensure.that(accountSaveRequest).isNotNull("10000");
+        AccountDto account = mapper.map(accountSaveRequest,AccountDto.class);
+        if (accountSaveRequest.getId() != null)
             Ensure.that(accountService.updateAccount(account)).isNotNull("20001");
         else
             Ensure.that(accountService.saveAccount(account)).isNotNull("20001");
@@ -213,9 +209,14 @@ public class SystemController {
     public JsonResult deleteAccount(@PathVariable("id") Long accountId) {
         Account account = accountService.findAccountById(accountId);
         Ensure.that(account).isNotNull("10000");
-        Account res = new Account();
+        AccountDto res = new AccountDto();
+        String ids = null;
         res.setId(accountId);
         res.setDeleted(Boolean.TRUE);
+        List<Role> roles = accountService.findRoleByAccountId(account.getId());
+        if (com.jd.core.utils.CollectionUtils.isNotEmpty(roles))
+            roles.forEach(role -> StringUtil.join(ids,role.getId()) );
+        res.setRoleIds(ids);
         Ensure.that(accountService.updateAccount(res));
         return new JsonResult();
     }
@@ -232,7 +233,7 @@ public class SystemController {
     public JsonResult disableAccount(@PathVariable("id") Long accountId,@PathVariable("enable") Boolean enable) {
         Account account = accountService.findAccountById(accountId);
         Ensure.that(account).isNotNull("10000");
-        Account res = new Account();
+        AccountDto res = new AccountDto();
         res.setId(accountId);
         res.setEnable(enable);
         if(enable)
@@ -253,7 +254,11 @@ public class SystemController {
     public JsonResult findAccount(@PathVariable("id") Long accountId) {
         Account account = accountService.findAccountById(accountId);
         Ensure.that(account).isNotNull("10000");
-        return new JsonResult(account);
+        AccountDetailResponse detailResponse = mapper.map(account,AccountDetailResponse.class);
+        List<Role> roles = accountService.findRoleByAccountId(account.getId());
+        if (com.jd.core.utils.CollectionUtils.isNotEmpty(roles))
+            roles.forEach(role -> detailResponse.setRoleIds(String.valueOf(role.getId())));
+        return new JsonResult(detailResponse);
     }
 
 
