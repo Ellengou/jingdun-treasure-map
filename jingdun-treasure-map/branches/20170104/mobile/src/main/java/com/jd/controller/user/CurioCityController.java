@@ -55,9 +55,8 @@ public class CurioCityController {
      */
     @RequestMapping(value = "/page", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult findCurioCityPage(@RequestBody CommonRequest<CurioCityListRequest> request) {
-        Pager pager = request.getPager();
-        CurioCityListRequest CurioCityListRequest = request.getParam(CurioCityListRequest.class);
+    public JsonResult findCurioCityPage(CurioCityListRequest request,Pager pager) {
+        CurioCityListRequest CurioCityListRequest = request;
         CurioCityDto curioCityDto = null;
         if (CurioCityListRequest != null)
             curioCityDto = mapper.map(CurioCityListRequest, CurioCityDto.class);
@@ -76,8 +75,8 @@ public class CurioCityController {
      */
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult findCurioCityList(@RequestBody CommonRequest<CurioCityListRequest> request) {
-        CurioCityListRequest CurioCityListRequest = request.getParam(CurioCityListRequest.class);
+    public JsonResult findCurioCityList(CurioCityListRequest request) {
+        CurioCityListRequest CurioCityListRequest = request;
         CurioCityDto curioCityDto = null;
         if (CurioCityListRequest != null)
             curioCityDto = mapper.map(CurioCityListRequest, CurioCityDto.class);

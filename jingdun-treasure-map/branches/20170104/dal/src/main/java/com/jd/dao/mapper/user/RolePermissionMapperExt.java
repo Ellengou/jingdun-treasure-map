@@ -9,7 +9,7 @@ public interface RolePermissionMapperExt extends RolePermissionMapper {
 
     List<RolePermissionDto> selectRolePermissionByRoleId(Long roleId);
 
-    boolean deleteByRoleId(Long id);
+    int deleteByRoleId(@Param("roleId") Long id);
 
     List<RolePermissionDto> findMenusAndResourceList(Long roleId);
 
