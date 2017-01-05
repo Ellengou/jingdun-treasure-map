@@ -1,5 +1,9 @@
 package com.jd.service.account;
 
+import com.github.pagehelper.PageInfo;
+import com.jd.common.mybatis.Pager;
+import com.jd.dtos.AccountDto;
+import com.jd.dtos.UserDto;
 import com.jd.entity.user.User;
 
 /**
@@ -14,4 +18,12 @@ public interface UserService {
     User findUserByNameAndPassword(String username, String password);
 
     User findAccountByUserName(String username);
+
+    PageInfo<UserDto> queryUserListPage(Pager pager, UserDto userDto);
+
+    User findUserById(Long userId);
+
+    Boolean updateUserInfo(UserDto res);
+
+    Boolean updateEnableUser(UserDto res);
 }

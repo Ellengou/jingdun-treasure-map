@@ -39,4 +39,41 @@
     limit 1
   </select>
 
+  <select id="queryUserListPage" resultType="com.jd.dtos.UserDto">
+      SELECT
+          a.user_name,
+          a.nick_name,
+          a.mobile,
+          a.created_time,
+          a.locked,
+          a.lock_time,
+          a.id,
+          a.address,
+          GROUP_CONCAT(c.`name`) tagName
+      FROM
+          USER a
+      LEFT JOIN user_tag b ON a.id = b.user_id
+      AND a.deleted = FALSE
+      JOIN tag c ON b.tag_id = c.id AND c.deleted = FALSE
+      <if test="param != null ">
+          <if test="param.key != null and param.key != ''">
+              AND (
+                  a.address LIKE CONCAT('%',#{param.key}, '%')
+                  OR a.user_name LIKE CONCAT('%',#{param.key}, '%')
+                  OR a.nick_name LIKE CONCAT('%', #{param.key}, '%')
+                  OR a.mobile LIKE CONCAT('%',#{param.key}, '%')
+                  OR a.unique_no LIKE CONCAT('%', #{param.key}, '%')
+              )
+          </if>
+        <if test="param.tagId != null">
+          AND c.id = #{param.tagId}
+        </if>
+        <if test="param.locked != null">
+          AND a.locked = #{param.locked}
+        </if>
+      </if>
+      GROUP BY
+          a.id
+  </select>
+
 </mapper>
