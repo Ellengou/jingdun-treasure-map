@@ -13,4 +13,17 @@
       #{id}
     </foreach>
   </delete>
+
+  <select id="selectByAccountId">
+    SELECT
+        *
+    FROM
+        account_role
+    WHERE
+        account_id = #{accountId}
+  </select>
+
+  <insert id="insertAccountRole" >
+    INSERT account_role (account_id,role_id) VALUES (#{accountId},#{roleId})
+  </insert>
 </mapper>
