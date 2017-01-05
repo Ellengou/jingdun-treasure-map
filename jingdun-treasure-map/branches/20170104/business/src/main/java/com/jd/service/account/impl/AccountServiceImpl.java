@@ -6,11 +6,13 @@ import com.jd.common.mybatis.Pager;
 import com.jd.core.ensure.Ensure;
 import com.jd.core.utils.CollectionUtils;
 import com.jd.dao.mapper.user.*;
+import com.jd.dtos.AccountDto;
 import com.jd.dtos.AccountListDto;
 import com.jd.dtos.RoleDto;
 import com.jd.dtos.RolePermissionDto;
 import com.jd.entity.user.*;
 import com.jd.service.account.AccountService;
+import com.jd.utils.StringUtil;
 import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,13 +63,32 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account updateAccount(Account account) {
-        return accountMapper.updateByPrimaryKeySelective(account) > 0 ? account : null;
+    public Account updateAccount(AccountDto account) {
+        Account a = mapper.map(account,Account.class);
+       int ok = accountMapper.updateByPrimaryKeySelective(a);
+        List<Long> ids = new ArrayList<>();
+        ids.add(a.getId());
+        accountRoleMapperExt.deleteAccountRoleByAccountIds(ids);
+        String role = account.getRoleIds();
+        if (StringUtil.isNotBlank(role)) {
+            AccountRole accountRole = new AccountRole();
+            accountRole.setRoleId(Long.valueOf(role));
+            accountRole.setAccountId(a.getId());
+            accountRoleMapperExt.insertSelective(accountRole);
+        }
+        return  ok > 0 ? a : null;
     }
 
     @Override
-    public Account saveAccount(Account account) {
-        return accountMapper.insertSelective(account) > 0 ? account : null;
+    public Account saveAccount(AccountDto account) {
+        Account a = mapper.map(account,Account.class);
+        int ok =accountMapper.insertSelective(a);
+        String role = account.getRoleIds();
+        AccountRole accountRole = new AccountRole();
+        accountRole.setRoleId(Long.valueOf(role));
+        accountRole.setAccountId(a.getId());
+        accountRoleMapperExt.insertSelective(accountRole);
+        return ok > 0 ? a : null;
     }
 
     @Override
@@ -176,7 +197,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public PageInfo<AccountListDto> selectAccountList(Pager pager, Account account) {
+    public PageInfo<AccountListDto> selectAccountList(Pager pager, AccountDto account) {
         if (pager != null)
             PageHelper.startPage(pager.getPageNum(), pager.getPageSize());
         List<AccountListDto> accountList = accountMapper.selectAccountList(account);

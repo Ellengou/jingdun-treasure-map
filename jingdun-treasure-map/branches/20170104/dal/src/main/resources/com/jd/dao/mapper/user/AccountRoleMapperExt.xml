@@ -3,4 +3,14 @@
 <mapper namespace="com.jd.dao.mapper.user.AccountRoleMapperExt" >
   <resultMap id="base" type="com.jd.entity.user.AccountRole" extends="com.jd.dao.mapper.user.AccountRoleMapper.BaseResultMap"/>
 
+  <delete id="deleteAccountRoleByAccountIds">
+    DELETE
+    FROM
+        account_role
+    WHERE
+    account_id  IN
+    <foreach collection="ids" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </delete>
 </mapper>

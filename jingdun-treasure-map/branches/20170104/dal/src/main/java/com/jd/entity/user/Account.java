@@ -32,28 +32,6 @@ public class Account extends BaseDomain {
 
     private Date lockTime;
 
-    private String roleIds;
-
-    private String key;
-
-    public String getRoleIds() {
-        return roleIds;
-    }
-
-    public void setRoleIds(String roleIds) {
-        this.roleIds = roleIds;
-    }
-
-    @Override
-    public String getKey() {
-        return key;
-    }
-
-    @Override
-    public void setKey(String key) {
-        this.key = key;
-    }
-
     public Long getId() {
         return id;
     }

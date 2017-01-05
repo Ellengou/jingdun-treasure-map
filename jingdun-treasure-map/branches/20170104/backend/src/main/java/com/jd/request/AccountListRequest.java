@@ -1,5 +1,7 @@
 package com.jd.request;
 
+import com.jd.utils.StringUtil;
+
 /**
  * Created by ellen on 2016/12/26.
  */
@@ -8,6 +10,29 @@ public class AccountListRequest {
     private String roleIds;
     private Boolean locked;
     private String key;
+    private String status;
+    private Boolean enable;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+    public Boolean getEnable() {
+        if (StringUtil.isNotBlank(this.status)) {
+            enable = Boolean.getBoolean(status);
+            if (!enable && Integer.valueOf(status).intValue()!=0)
+                enable = null;
+        }else
+            enable = null;
+        return enable;
+    }
+
+    public void setEnable(Boolean enable) {
+        this.enable = enable;
+    }
 
     public String getKey() {
         return key;
