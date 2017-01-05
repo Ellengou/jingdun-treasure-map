@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface AccountRoleMapperExt extends AccountRoleMapper {
 
-    List<AccountRole> selectByAccountId(Long id);
+    List<AccountRole> selectByAccountId(@Param("accountId") Long id);
 
-    int insertObjects(List<Long> accountIds, List<Long> roleIds);
+    int insertAccountRole(@Param("accountId") Long accountId,@Param("roleId") Long roleId);
 
     void deleteAccountRoleByAccountIds(@Param("ids") List<Long> accountIds);
 }
