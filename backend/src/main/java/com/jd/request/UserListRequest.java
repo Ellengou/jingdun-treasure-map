@@ -10,7 +10,6 @@ public class UserListRequest {
     private Boolean locked;
     private String key;
     private String status;
-    private Boolean enable;
     private Long tagId;
 
     public Long getTagId() {
@@ -28,19 +27,6 @@ public class UserListRequest {
     public void setStatus(String status) {
         this.status = status;
     }
-    public Boolean getEnable() {
-        if (StringUtil.isNotBlank(this.status)) {
-            enable = Boolean.getBoolean(status);
-            if (!enable && Integer.valueOf(status).intValue()!=0)
-                enable = null;
-        }else
-            enable = null;
-        return enable;
-    }
-
-    public void setEnable(Boolean enable) {
-        this.enable = enable;
-    }
 
     public String getKey() {
         return key;
@@ -51,6 +37,12 @@ public class UserListRequest {
     }
 
     public Boolean getLocked() {
+        if (StringUtil.isNotBlank(this.status)) {
+            locked = Boolean.getBoolean(status);
+            if (!locked && Integer.valueOf(status).intValue()!=0)
+                locked = null;
+        }else
+            locked = null;
         return locked;
     }
 

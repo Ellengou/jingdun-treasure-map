@@ -1,5 +1,6 @@
 package com.jd.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
 import com.jd.common.mybatis.Pager;
 import com.jd.core.ensure.Ensure;
@@ -18,7 +19,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by renchao on 2017/1/5.
@@ -94,5 +97,23 @@ public class UserController {
         return new JsonResult();
     }
 
+    public static void main(String[] args) {
+        UserListResponse response = new UserListResponse();
+        response.setLocked(true);
+        response.setLockTime(new Date());
+        response.setId(3l);
+        response.setStatus("2");
+        response.setAddress("莲花池");
+        response.setCreatedTime(new Date());
+        response.setKey("");
+        response.setMobile("189182731");
+        response.setNickName("花湖");
+        response.setMajor("本科");
+        response.setUserBanner("头像地址");
+
+        List<UserListResponse> listResponses = new ArrayList<>();
+        listResponses.add(response);
+        System.out.print(JSON.toJSONString(listResponses));
+    }
 
 }
