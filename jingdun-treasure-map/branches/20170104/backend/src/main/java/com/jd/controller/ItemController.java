@@ -7,13 +7,17 @@ import com.jd.core.ensure.Ensure;
 import com.jd.core.utils.CollectionUtils;
 import com.jd.core.utils.StringUtils;
 import com.jd.dtos.ItemDto;
+import com.jd.dtos.ItemTagDto;
 import com.jd.entity.user.Item;
+import com.jd.entity.user.ItemTag;
 import com.jd.entity.user.Picture;
 import com.jd.face.JsonResult;
 import com.jd.request.CommonRequest;
 import com.jd.request.ItemListRequest;
 import com.jd.request.ItemRequest;
+import com.jd.request.ItemTagRequest;
 import com.jd.response.ItemListResponse;
+import com.jd.response.TagResponse;
 import com.jd.service.item.ItemService;
 import com.jd.service.shop.PictureService;
 import com.jd.utils.DozerUtils;
@@ -139,6 +143,24 @@ public class ItemController {
         Ensure.that(itemRequest).isNotNull("10000");
         Ensure.that(itemRequest.getIds()).isNotNull("10001");
         Ensure.that(itemService.delItem(itemRequest.getIds())).isTrue("40005");
+        return new JsonResult();
+    }
+
+
+    /**
+     * 商品标签列表
+     *
+     * @return
+     */
+    @RequestMapping(value = "/tag/list", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonResult findItemDetail(ItemTagRequest request) {
+        ItemTagDto dto = null;
+        if (request!=null)
+            dto = mapper.map(request,ItemTagDto.class);
+        List<ItemTag> list = itemService.queryTagList(dto);
+        if (com.jd.utils.CollectionUtils.isNotEmpty(list))
+            return new JsonResult(DozerUtils.maps(list, TagResponse.class));
         return new JsonResult();
     }
 

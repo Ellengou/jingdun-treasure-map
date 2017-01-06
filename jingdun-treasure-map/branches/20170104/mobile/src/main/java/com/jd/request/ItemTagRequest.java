@@ -1,7 +1,5 @@
 package com.jd.request;
 
-import java.util.Date;
-
 /**
  * @author Ellen.
  * @date 2017/1/6.
