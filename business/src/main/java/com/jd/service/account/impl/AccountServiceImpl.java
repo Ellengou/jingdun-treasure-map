@@ -180,7 +180,7 @@ public class AccountServiceImpl implements AccountService {
         Role role = mapper.map(dto, Role.class);
         List<Long> resources = dto.getPermissionIds();
         if (CollectionUtils.isNotEmpty(resources)) {
-            Ensure.that(rolePermissionMapperExt.deleteByRoleId(dto.getId())>0).isTrue("70001");
+            rolePermissionMapperExt.deleteByRoleId(dto.getId());
             for (int i = 0; i < resources.size(); i++) {
                 RolePermission roleResource = new RolePermission();
                 roleResource.setPermissionId(resources.get(i));

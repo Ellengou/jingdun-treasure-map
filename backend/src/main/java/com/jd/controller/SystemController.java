@@ -418,7 +418,8 @@ public class SystemController {
     @RequestMapping(value = "/role-resource/list", method = RequestMethod.GET)
     @ResponseBody
     public JsonResult roleResourceList() {
-        return new JsonResult(getRoleResourceList(null));
+        List<RoleMenuRoleResourceResponse>  roleResourceResponses = getRoleResourceList(null);
+        return new JsonResult(DozerUtils.maps(roleResourceResponses,RoleMenuRoleResourceResponse.class));
     }
 
     /**
@@ -427,61 +428,27 @@ public class SystemController {
      * @return
      */
     public  List<RoleMenuRoleResourceResponse>  getRoleResourceList(Long roleId){
-        //一级菜单
-        List<RolePermissionDto> oneLevelMenusList = shopService.findMenusList(null, "1",roleId);
-        List<RolePermissionDto> twoAndThreeLevelMenusList;
-        List<RolePermissionDto> roleResourceDtos;
+        List<RolePermissionDto> reslist = shopService.findMenusList(roleId);
         List<RoleMenuRoleResourceResponse> roleResourceResponses = new ArrayList<>();
-
-        if (CollectionUtils.isNotEmpty(oneLevelMenusList))
-            for (RolePermissionDto dto : oneLevelMenusList) {
-                String resourceQueryStr = dto.getMenuIds();
-                String mids = dto.getMenuIds();
-                String mnames = dto.getMenuNames();
-                List<ResourceResponse> resourceResponses = new ArrayList<>();
-                //2 3 级菜单
-                twoAndThreeLevelMenusList = shopService.findMenusList(mids, "2,3",roleId);
-                for (RolePermissionDto domain : twoAndThreeLevelMenusList) {
-                    Set<String> ids;
-                    ids = new HashSet<>();
-                    Set<String> names = new HashSet<>();
-                    CollectionUtils.addAll(ids, domain.getMenuIds().split(","));
-                    CollectionUtils.addAll(names, domain.getMenuNames().split(","));
-                    String[] id = new String[names.size()];
-                    names.toArray(id);
-                    int i = 0;
-                    for (String sid : ids) {
-                        ResourceResponse resourceResponse;
-                        resourceResponse = new ResourceResponse();
-                        resourceResponse.setId(Long.valueOf(sid));
-                        resourceResponse.setName(id[i]);
-                        resourceResponses.add(resourceResponse);
-                        i++;
-                    }
+        List<ResourceResponse> resource = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(reslist))
+            for (RolePermissionDto dto : reslist){
+                RoleMenuRoleResourceResponse resourceResponse = new RoleMenuRoleResourceResponse();
+                resourceResponse.setId(dto.getId());
+                resourceResponse.setName(dto.getName());
+                String bus =  dto.getButtonIds();
+                if (StringUtil.trimToNull(bus)!=null){
+                   String[] bts =  bus.split(",");
+                   String[] btn =  dto.getButtonNames().split(",");
+                   for (int i = 0;i<bts.length;i++){
+                       ResourceResponse response = new ResourceResponse();
+                       response.setName(btn[i]);
+                       response.setId(Long.valueOf(bts[i]));
+                       resource.add(response);
+                   }
                 }
-                twoAndThreeLevelMenusList.forEach(rolePermissionDto -> resourceQueryStr.concat(rolePermissionDto.getMenuIds()));
-                //当前菜单下所有权限集合
-                roleResourceDtos = shopService.findResourceList(resourceQueryStr,roleId);
-                for (RolePermissionDto permissionDto : roleResourceDtos) {
-                    Set<String> ids = new HashSet<>();
-                    Set<String> names = new HashSet<>();
-                    CollectionUtils.addAll(ids, permissionDto.getButtonIds().split(","));
-                    CollectionUtils.addAll(names, permissionDto.getButtonNames().split(","));
-                    String[] id = new String[names.size()];
-                    names.toArray(id);
-                    int i = 0;
-                    for (String sid : ids) {
-                        ResourceResponse resourceResponse = new ResourceResponse();
-                        resourceResponse.setId(Long.valueOf(sid));
-                        resourceResponse.setName(id[i]);
-                        resourceResponses.add(resourceResponse);
-                        i++;
-                    }
-
-                }
-                RoleMenuRoleResourceResponse roleMenuRoleResourceResponse = mapper.map(dto, RoleMenuRoleResourceResponse.class);
-                roleMenuRoleResourceResponse.setResource(resourceResponses);
-                roleResourceResponses.add(roleMenuRoleResourceResponse);
+                resourceResponse.setResource(resource);
+                roleResourceResponses.add(resourceResponse);
             }
             return roleResourceResponses;
     }
