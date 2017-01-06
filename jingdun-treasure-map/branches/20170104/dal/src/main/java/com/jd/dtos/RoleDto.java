@@ -26,7 +26,17 @@ public class RoleDto implements Serializable {
 
     private Boolean deleted;
 
-    private List<Long> PermissionIds;//权限ID
+    private List<Long> permissionIds;//权限ID
+
+    private List<Long> menuIds;//菜单
+
+    public List<Long> getMenuIds() {
+        return menuIds;
+    }
+
+    public void setMenuIds(List<Long> menuIds) {
+        this.menuIds = menuIds;
+    }
 
     public Long getId() {
         return id;
@@ -93,10 +103,10 @@ public class RoleDto implements Serializable {
     }
 
     public List<Long> getPermissionIds() {
-        return PermissionIds;
+        return permissionIds;
     }
 
     public void setPermissionIds(List<Long> permissionIds) {
-        PermissionIds = permissionIds;
+        this.permissionIds = permissionIds;
     }
 }

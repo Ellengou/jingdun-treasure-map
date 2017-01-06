@@ -44,9 +44,9 @@ public interface ShopService {
 
     Boolean delShopTagsById(Long id, List<Long> tagIds);
 
-    List<RolePermissionDto> findResourceList(String ids,Long roleId);
+    List<RolePermissionDto> findResourceList(Long roleId);
 
-    List<RolePermissionDto> findMenusList(String id, String level,Long roleId);
+    List<RolePermissionDto> findMenusList(Long roleId);
 
     PageInfo<EvaluationDto> queryEvaluationListByShopId(Pager pager, EvaluationDto evaluationDto);
 

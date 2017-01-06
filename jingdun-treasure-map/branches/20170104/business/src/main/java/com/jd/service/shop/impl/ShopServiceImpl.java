@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.jd.common.mybatis.Pager;
 import com.jd.core.ensure.Ensure;
+import com.jd.core.utils.CollectionUtils;
 import com.jd.dao.mapper.user.*;
 import com.jd.dtos.EvaluationDto;
 import com.jd.dtos.RolePermissionDto;
@@ -16,6 +17,7 @@ import com.jd.service.shop.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -131,13 +133,13 @@ public class ShopServiceImpl implements ShopService {
     }
 
     @Override
-    public List<RolePermissionDto> findResourceList(String ids,Long roleId) {
-        return rolePermissionMapperExt.findResourceList(ids != null ? Arrays.asList(ids.split(",")) : null,roleId);
+    public List<RolePermissionDto> findResourceList(Long roleId) {
+        return rolePermissionMapperExt.findMenusList(roleId);
     }
 
     @Override
-    public List<RolePermissionDto> findMenusList(String id, String level,Long roleId) {
-        return rolePermissionMapperExt.findMenusList(id != null ? Arrays.asList(id.split(",")) : null, level != null ? Arrays.asList(level.split(",")) : null,roleId);
+    public List<RolePermissionDto> findMenusList(Long roleId) {
+        return rolePermissionMapperExt.findMenusList(roleId);
     }
 
     @Override

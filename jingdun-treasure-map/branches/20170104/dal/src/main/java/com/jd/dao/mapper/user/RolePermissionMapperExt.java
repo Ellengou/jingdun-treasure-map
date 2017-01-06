@@ -15,5 +15,5 @@ public interface RolePermissionMapperExt extends RolePermissionMapper {
 
     List<RolePermissionDto> findResourceList(@Param("ids") List<String> ids,@Param("roleId") Long roleId);
 
-    List<RolePermissionDto> findMenusList(@Param("ids") List<String> idList,@Param("levels") List<String> level,@Param("roleId")Long roleId);
+    List<RolePermissionDto> findMenusList(@Param("roleId")Long roleId);
 }

@@ -14,7 +14,7 @@
         <div class="logo">
         </div>
     </div>
-    <input type="button" onclick="scoreQuery()" value="测试登陆"/>
+    <input type="button" onclick="fileloadon()" value="测试上傳"/>
     <script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
     <script type="text/javascript">
 
@@ -74,11 +74,54 @@
             $("#codePic").attr("src", "");
         }
         ;
+
+        function fileloadon() {
+            $("#msg").html("");
+            $("#_fileForm").submit(function () {
+                $("#_fileForm").ajaxSubmit({
+                    type: "post",
+                    url: "/image/upload",
+                    success: function (data1) {
+                        $('#timgUrl').html(data1);
+                        var reg = new RegExp('"', "g");
+                        var imageUrl = $('#timgUrl').text().replace(reg, "");
+                        $('#backImgUrl').attr("src", imageUrl);
+                        if ($('#timgUrl').html() != null) {
+                            $('#timgok').html("文件上传成功");
+                        } else {
+                            $('#timgok').html("文件上传失败");
+                        }
+                    },
+                    error: function (msg) {
+                        alert("文件上传失败");
+                    }
+                });
+                return false;
+            });
+            $("#_fileForm").submit();
+        }
     </script>
     </div>
-
+    <%--<script src="project/js/jquery.form.js" type="text/javascript"></script>--%>
+    <%--<script src="project/js/fileload.js" type="text/javascript"></script>--%>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            createHtml($("#str"));
+        })
+    </script>
+    <tr>
+        <td>图片</td>
+        <td>
+            <div id="str">
+            </div>
+            <p style="display: none;" id="timgUrl"></p>
+            <p style="color: red" id="timgok"></p>
+            <img id="backImgUrl" src="@Model.ImageUrl" style="width:300px; height:200px;" /></td>
+    </tr>
+    <%--<script src="~/project/js/jquery.form.js" type="text/javascript"></script>--%>
+    <%--<script src="~/project/js/fileload.js" type="text/javascript"></script>--%>
     <center>
-        <form action="/base/upload" method="post" enctype="multipart/form-data"/>
+        <form id="_fileForm" >
         用户名：
         <input type="text" id="username"/>
         密&nbsp;&nbsp;码：
@@ -92,8 +135,8 @@
         <hr/>
         <br/><br/><br/>
 
-        <input name="file" type="file"/>
-        <input type="submit" value="上传"/>
+        <%--<input name="file" type="file"/>--%>
+        <%--<input type="submit" value="上传"/>--%>
         </form>
     </center>
 
