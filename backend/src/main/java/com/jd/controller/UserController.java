@@ -70,7 +70,7 @@ public class UserController {
         Ensure.that(user).isNotNull("USER_10001");
         UserDto res = new UserDto();
         res.setId(userId);
-        res.setLocked(enable);
+        res.setLocked(!enable);
         res.setLockTime(new Date());
         if(enable)
             Ensure.that(userService.updateEnableUser(res)).isTrue("USER_1017");
