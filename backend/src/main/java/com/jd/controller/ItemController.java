@@ -161,7 +161,8 @@ public class ItemController {
         List<ItemTag> list = itemService.queryTagList(dto);
         if (com.jd.utils.CollectionUtils.isNotEmpty(list))
             return new JsonResult(DozerUtils.maps(list, TagResponse.class));
-        return new JsonResult();
+        else
+            return new JsonResult(new TagResponse());
     }
 
 }

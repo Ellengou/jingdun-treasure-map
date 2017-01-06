@@ -56,7 +56,8 @@ public class ShopController extends BaseController {
     @RequestMapping(value = "/page", method = RequestMethod.POST)
     @ResponseBody
     public JsonResult findShopPage(@RequestBody CommonRequest<ShopListRequest> request) {
-        Pager pager = request.getPager();
+        Pager pager;
+        pager = request.getPager();
         ShopListRequest shopListRequest = request.getParam(ShopListRequest.class);
         ShopDto shopDto = null;
         if (shopListRequest != null)
@@ -82,7 +83,10 @@ public class ShopController extends BaseController {
         if (shopListRequest != null)
             shopDto = mapper.map(shopListRequest, ShopDto.class);
         PageInfo<ShopDto> info = shopService.queryShopList(new Pager(), shopDto);
-        return new JsonResult(DozerUtils.maps(info.getList(), ShopResponse.class));
+        if (CollectionUtils.isNotEmpty(info.getList()))
+            return new JsonResult(DozerUtils.maps(info.getList(), ShopResponse.class));
+        else
+            return new JsonResult(new ShopResponse());
     }
 
     /**
@@ -197,7 +201,10 @@ public class ShopController extends BaseController {
         Ensure.that(shopRequest).isNotNull("10000");
         Ensure.that(shopRequest.getId()).isNotNull("10001");
         List<Tag> tags = shopService.findTagListByShopId(shopRequest.getId());
-        return new JsonResult(DozerUtils.maps(tags, TagResponse.class));
+        if (CollectionUtils.isNotEmpty(tags))
+            return new JsonResult(DozerUtils.maps(tags, TagResponse.class));
+        else
+            return new JsonResult(new TagResponse());
     }
 
     /**
