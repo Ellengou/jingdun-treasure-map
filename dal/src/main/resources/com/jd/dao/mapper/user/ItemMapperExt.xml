@@ -79,7 +79,7 @@
                 )
             </if>
         </if>
-        GROUP BY a.id
+        GROUP BY a.id,b.id,e.id
     </select>
 
     <update id="delItem">
@@ -142,7 +142,7 @@
         a.deleted = FALSE
         AND  a.id = #{id}
         GROUP BY
-        a.id
+        a.id,b.id,e.id
     </select>
 
 </mapper>

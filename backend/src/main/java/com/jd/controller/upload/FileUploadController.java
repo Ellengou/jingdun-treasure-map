@@ -27,7 +27,7 @@ public class FileUploadController {
      * @param file
      * @return
      */
-    @RequestMapping(value = "/image/upload", method = RequestMethod.OPTIONS)
+    @RequestMapping(value = "/image/upload", method = RequestMethod.POST)
     @ResponseBody
     public JsonResult uploadImageFile(MultipartFile file) {
         try {
