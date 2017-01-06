@@ -50,4 +50,6 @@ public interface ItemService {
     List<ItemTag> queryTagList(ItemTagDto dto);
 
     Favorites saveFavorites(Favorites favorites);
+
+    Boolean updateEvaluationUpOrDown(Long eid, boolean b);
 }
