@@ -162,7 +162,7 @@ public class ItemController {
         if (com.jd.utils.CollectionUtils.isNotEmpty(list))
             return new JsonResult(DozerUtils.maps(list, TagResponse.class));
         else
-            return new JsonResult(new TagResponse());
+            return new JsonResult(list);
     }
 
 }
