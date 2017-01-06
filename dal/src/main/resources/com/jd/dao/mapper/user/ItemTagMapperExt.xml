@@ -3,13 +3,13 @@
 <mapper namespace="com.jd.dao.mapper.user.ItemTagMapperExt" >
   <resultMap id="base" type="com.jd.entity.user.ItemTag" extends="com.jd.dao.mapper.user.ItemTagMapper.BaseResultMap"/>
   <sql id="column_List" >
-    id, name, banner_id, desc, sequence, visible, create_time, update_time, deleted
+    id, `name`, banner_id, `desc`, sequence, visible, create_time, update_time, deleted
   </sql>
 
   <select id="queryTagList" resultMap="base">
     SELECT
     <include refid="column_List"/>
-    FROM tag
+    FROM item_tag
     WHERE deleted = FALSE
     <if test="param != null">
       <if test="param.key != null and param.key != ''">

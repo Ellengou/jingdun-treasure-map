@@ -81,7 +81,7 @@ public class ShopController extends BaseController {
         ShopDto shopDto = null;
         if (shopListRequest != null)
             shopDto = mapper.map(shopListRequest, ShopDto.class);
-        PageInfo<ShopDto> info = shopService.queryShopList(null, shopDto);
+        PageInfo<ShopDto> info = shopService.queryShopList(new Pager(), shopDto);
         return new JsonResult(DozerUtils.maps(info.getList(), ShopResponse.class));
     }
 

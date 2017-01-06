@@ -1,5 +1,6 @@
 package com.jd.dtos;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -8,7 +9,7 @@ import java.util.Date;
  * @since 1.0.
  * com.jd.dtos .by jingdun.tech.
  */
-public class ItemTagDto {
+public class ItemTagDto implements Serializable{
     private Long id;
 
     private String name;
@@ -26,6 +27,26 @@ public class ItemTagDto {
     private Date updateTime;
 
     private Boolean deleted;
+
+    private String key;
+
+    private Long businessId;
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public Long getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(Long businessId) {
+        this.businessId = businessId;
+    }
 
     public Long getId() {
         return id;
