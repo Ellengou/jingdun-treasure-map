@@ -3,6 +3,7 @@ package com.jd.controller.user;
 import com.jd.core.ensure.Ensure;
 import com.jd.face.JsonResult;
 import com.jd.utils.QiniuUtils;
+import com.jd.utils.StringUtil;
 import com.qiniu.api.auth.AuthException;
 import org.json.JSONException;
 import org.springframework.stereotype.Controller;
@@ -20,7 +21,7 @@ import java.io.IOException;
  * com.jd.controller.user .by jingdun.tech.
  */
 @Controller
-@RequestMapping("/wap/file")
+@RequestMapping("/wap")
 public class FileController {
 
     /**
@@ -29,19 +30,14 @@ public class FileController {
      * @param
      * @return
      */
-    @RequestMapping(value = "/upload-token", method = RequestMethod.GET)
+    @RequestMapping(value = "/upload/token", method = RequestMethod.GET)
     @ResponseBody
-    public JsonResult uploadToken() {
-        try {
-            String token = QiniuUtils.getUploadTocken(QiniuUtils.QINIU_BUCKET);
-            Ensure.that(token).isNotNull("");
-            return new JsonResult(token);
-        } catch (AuthException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return new JsonResult();
+    public JsonResult uploadToken(String bucketName) {
+        if (!StringUtil.isNotBlank(bucketName))
+            bucketName = QiniuUtils.QINIU_BUCKET;
+        String token = QiniuUtils.getUpToken(bucketName);
+        Ensure.that(token).isNotNull("60003");
+        return new JsonResult(token);
     }
 
     /**
@@ -50,12 +46,12 @@ public class FileController {
      * @param
      * @return
      */
-    @RequestMapping(value = "/image/upload", method = RequestMethod.POST)
+    @RequestMapping(value = "/upload/image", method = RequestMethod.POST)
     @ResponseBody
     public JsonResult uploadImage(MultipartFile file) {
         try {
             Ensure.that(file).isNotNull("60000");
-            String path = QiniuUtils.uploadFile(file.getInputStream(), QiniuUtils.QINIU_BUCKET);
+            String path = QiniuUtils.uploadFileSpecBucket(file.getInputStream(), QiniuUtils.QINIU_BUCKET);
             Ensure.that(path).isNotNull("60001");
             return new JsonResult(path);
         } catch (IOException e) {

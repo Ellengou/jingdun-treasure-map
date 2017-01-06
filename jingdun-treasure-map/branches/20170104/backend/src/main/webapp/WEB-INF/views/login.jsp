@@ -78,7 +78,7 @@
     </div>
 
     <center>
-        <form action="/file-image/upload" method="post" enctype="multipart/form-data"/>
+        <form action="/base/upload" method="post" enctype="multipart/form-data"/>
         用户名：
         <input type="text" id="username"/>
         密&nbsp;&nbsp;码：
@@ -96,6 +96,8 @@
         <input type="submit" value="上传"/>
         </form>
     </center>
+
+    <img src="http://ohfpl7rfr.bkt.clouddn.com/FoSvL_BT_GSpCoPEq6wI9_WpiXRZ" />
 
     <div id="footer">
         阿里巴巴 | Copyright &copy; 2016 All rights reserved.
