@@ -22,8 +22,8 @@
 
         <!--数据库连接的信息：驱动类、连接地址、用户名、密码 -->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://localhost:3306/jd2016"
-                        userId="root" password="">
+                        connectionURL="jdbc:mysql://121.40.79.113:3306/jd2016"
+                        userId="root" password="123456">
         </jdbcConnection>
 
         <!--<javaTypeResolver type="com.jd.mybatis.JavaTypeResolverSelfImpl">-->
@@ -142,10 +142,10 @@
             <!--<generatedKey column="id" sqlStatement="Mysql" type="post" identity="true"/>-->
         <!--</table>-->
 
-        <!--<table tableName="item" domainObjectName="Item"-->
-               <!--enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">-->
-            <!--<generatedKey column="id" sqlStatement="Mysql" type="post" identity="true"/>-->
-        <!--</table>-->
+        <table tableName="item" domainObjectName="Item"
+               enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+            <generatedKey column="id" sqlStatement="Mysql" type="post" identity="true"/>
+        </table>
 
         <!--<table tableName="evaluation" domainObjectName="Evaluation"-->
                <!--enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">-->
@@ -162,15 +162,15 @@
             <!--<generatedKey column="id" sqlStatement="Mysql" type="post" identity="true"/>-->
         <!--</table>-->
 
-        <table tableName="item_tag" domainObjectName="ItemTag"
-               enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
-            <generatedKey column="id" sqlStatement="Mysql" type="post" identity="true"/>
-        </table>
+        <!--<table tableName="item_tag" domainObjectName="ItemTag"-->
+               <!--enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" type="post" identity="true"/>-->
+        <!--</table>-->
 
-        <table tableName="item_tag_base" domainObjectName="ItemTagBase"
-               enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
-            <generatedKey column="id" sqlStatement="Mysql" type="post" identity="true"/>
-        </table>
+        <!--<table tableName="item_tag_base" domainObjectName="ItemTagBase"-->
+               <!--enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" type="post" identity="true"/>-->
+        <!--</table>-->
 
     </context>
 </generatorConfiguration>

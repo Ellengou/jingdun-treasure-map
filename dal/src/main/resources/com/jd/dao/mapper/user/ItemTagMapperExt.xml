@@ -6,4 +6,18 @@
     id, name, banner_id, desc, sequence, visible, create_time, update_time, deleted
   </sql>
 
+  <select id="queryTagList" resultMap="base">
+    SELECT
+    <include refid="column_List"/>
+    FROM tag
+    WHERE deleted = FALSE
+    <if test="param != null">
+      <if test="param.key != null and param.key != ''">
+        AND name LIKE CONCAT('%',#{param.key},'%')
+      </if>
+      <if test="param.businessId != null">
+        AND EXISTS (SELECT 1 FROM item_tag_base WHERE item_id = #{param.id})
+      </if>
+    </if>
+  </select>
 </mapper>

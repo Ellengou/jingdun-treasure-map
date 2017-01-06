@@ -1,5 +1,7 @@
 package com.jd.dtos;
 
+import com.jd.utils.StringUtil;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -83,7 +85,19 @@ public class ShopDto implements Serializable {
 
     private String shopViews;
 
+    private String[] shopView;
+
     private String banner;
+
+    public String[] getShopView() {
+        if (StringUtil.isNotBlank(shopViews) && shopViews.contains(","))
+            return shopViews.split(",");
+        return new String[]{shopViews};
+    }
+
+    public void setShopView(String[] shopView) {
+        this.shopView = shopView;
+    }
 
     public String getShopViews() {
         return shopViews;

@@ -21,11 +21,7 @@ public class ItemListResponse implements Serializable{
 
     private BigDecimal inventory;
 
-    private String material;
-
     private String desc;
-
-    private String dynasty;
 
     private BigDecimal oriPrice;
 
@@ -78,6 +74,72 @@ public class ItemListResponse implements Serializable{
     private Long storedNumer;
 
     private Long viewedNumber;
+
+    private String remark;
+
+    private Long support;
+
+    private Long against;
+
+    private Long evaluations;
+
+    private String years;
+
+    private String certificate;
+
+    private String material;
+
+    private String cid;//商品证件照
+
+    private String[] itemViews;//商品照片
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public Long getSupport() {
+        return support;
+    }
+
+    public void setSupport(Long support) {
+        this.support = support;
+    }
+
+    public Long getAgainst() {
+        return against;
+    }
+
+    public void setAgainst(Long against) {
+        this.against = against;
+    }
+
+    public Long getEvaluations() {
+        return evaluations;
+    }
+
+    public void setEvaluations(Long evaluations) {
+        this.evaluations = evaluations;
+    }
+
+    public String getYears() {
+        return years;
+    }
+
+    public void setYears(String years) {
+        this.years = years;
+    }
+
+    public String getCertificate() {
+        return certificate;
+    }
+
+    public void setCertificate(String certificate) {
+        this.certificate = certificate;
+    }
 
     public String getBusinessType() {
         return businessType;
@@ -279,10 +341,6 @@ public class ItemListResponse implements Serializable{
         this.viewedNumber = viewedNumber;
     }
 
-    private String cid;//商品证件照
-
-    private String[] itemViews;//商品照片
-
     public Long getId() {
         return id;
     }
@@ -329,14 +387,6 @@ public class ItemListResponse implements Serializable{
 
     public void setDesc(String desc) {
         this.desc = desc;
-    }
-
-    public String getDynasty() {
-        return dynasty;
-    }
-
-    public void setDynasty(String dynasty) {
-        this.dynasty = dynasty;
     }
 
     public Long getCategoryId() {

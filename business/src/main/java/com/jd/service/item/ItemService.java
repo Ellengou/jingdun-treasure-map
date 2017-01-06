@@ -4,8 +4,13 @@ import com.github.pagehelper.PageInfo;
 import com.jd.common.mybatis.Pager;
 import com.jd.dtos.EvaluationDto;
 import com.jd.dtos.ItemDto;
+import com.jd.dtos.ItemTagDto;
 import com.jd.entity.user.Evaluation;
+import com.jd.entity.user.Favorites;
 import com.jd.entity.user.Item;
+import com.jd.entity.user.ItemTag;
+
+import java.util.List;
 
 /**
  * @author Ellen.
@@ -16,6 +21,8 @@ import com.jd.entity.user.Item;
 public interface ItemService {
 
     Item findById(Long id);
+
+    ItemDto findDetailById(Long id);
 
     Item findByName(String name);
 
@@ -34,4 +41,13 @@ public interface ItemService {
     PageInfo<EvaluationDto> queryEvaluationListByItemIdOrUserId(Pager pager, EvaluationDto evaluationDto);
 
     Evaluation saveEvaluation(Evaluation evaluation);
+
+    /**
+     * 商品标签查询
+     * @param dto
+     * @return
+     */
+    List<ItemTag> queryTagList(ItemTagDto dto);
+
+    Favorites saveFavorites(Favorites favorites);
 }

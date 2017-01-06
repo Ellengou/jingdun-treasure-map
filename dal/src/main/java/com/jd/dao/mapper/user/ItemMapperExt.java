@@ -19,4 +19,5 @@ public interface ItemMapperExt extends ItemMapper {
 
     int marketAble(@Param("market") Boolean market, @Param("idList") List<Long> idList);
 
+    ItemDto findDetailById(@Param("id") Long id);
 }

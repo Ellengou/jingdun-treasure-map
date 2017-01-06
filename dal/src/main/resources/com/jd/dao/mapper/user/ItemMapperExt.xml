@@ -1,101 +1,148 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.jd.dao.mapper.user.ItemMapperExt" >
+<mapper namespace="com.jd.dao.mapper.user.ItemMapperExt">
 
-  <resultMap id="base" type="com.jd.entity.user.Item" extends="com.jd.dao.mapper.user.ItemMapper.BaseResultMap" />
+    <resultMap id="base" type="com.jd.entity.user.Item" extends="com.jd.dao.mapper.user.ItemMapper.BaseResultMap"/>
 
-  <sql id="column_List" >
-    id, business_id, business_type, name, price, inventory, material, desc, dynasty,
-    ori_price, category_id, sequence, cover_id, unit, type, market_able, channel_web,
-    channel_shop, code, pinyin, purchase_price, spec, min_price, max_price, is_recommend,
-    is_assess_inventory, create_time, update_time, deleted
-  </sql>
+    <sql id="column_List">
+        id, business_id, business_type, name, price, inventory, ori_price, category_id, sequence,
+        cover_id, unit, type, market_able, channel_web, channel_shop, code, pinyin, purchase_price,
+        spec, material, years, certificate, remark, min_price, max_price, is_recommend, is_assess_inventory,
+        create_time, update_time, deleted
+    </sql>
 
-  <select id="findByName" resultMap="base">
+    <select id="findByName" resultMap="base">
+        SELECT
+        <include refid="column_List"/>
+        FROM item a
+        WHERE
+        a.`name` = #{name}
+        limit 1
+    </select>
+
+    <select id="findByCode" resultMap="base">
+        SELECT
+        <include refid="column_List"/>
+        FROM item a
+        WHERE
+        a.`code` = #{code}
+        limit 1
+    </select>
+
+    <select id="queryItemList" resultType="com.jd.dtos.ItemDto">
+        SELECT
+        a.id,
+        a.`name`,
+        GROUP_CONCAT(c.path) path,
+        a.price,
+        a.inventory,
+        a.remark,
+        b.`name` shopName,
+        a.business_id businessId,
+        a.category_id categroyId,
+        d.`name` tagName,
+        a.spec,
+        a.`code`,
+        a.material,
+        a.certificate,
+        a.years,
+        a.market_able marketAble,
+        a.create_time createTime,
+        e.support,
+        e.against,
+        COUNT(e.id)evaluations
+        FROM
+        item a
+        JOIN shop b ON b.id = a.business_id
+        AND b.deleted = FALSE
+        JOIN item_tag d ON d.id = a.category_id
+        AND d.deleted = FALSE
+        LEFT JOIN picture c ON a.id = c.foreign_id
+        AND c.picture_type = 'ITEM'
+        AND c.deleted = FALSE
+        LEFT JOIN evaluation e ON e.business_id = a.id AND e.deleted = FALSE
+        WHERE
+        a.deleted = FALSE
+        <if test="param != null ">
+            <if test="param.categoryId != null ">
+                AND a.category_id = #{param.categoryId}
+            </if>
+            <if test="param.businessId != null ">
+                AND a.business_id = #{param.businessId}
+            </if>
+            <if test="param.marketAble != null ">
+                AND a.market_able = #{param.marketAble}
+            </if>
+            <if test="param.key != null ">
+                AND (
+                a.`name` LIKE CONCAT('%',#{param.key}, '%')
+                )
+            </if>
+        </if>
+        GROUP BY a.id
+    </select>
+
+    <update id="delItem">
+        UPDATE
+        item
+        SET
+        deleted = TRUE
+        WHERE
+        id IN
+        <foreach collection="idList" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <update id="marketAble">
+        UPDATE
+        item
+        SET
+        market_able = #{market}
+        WHERE
+        id IN
+        <foreach collection="idList" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <select id="findDetailById" resultType="com.jd.dtos.ItemDto">
       SELECT
-      <include refid="column_List"/>
-      FROM item a
-      WHERE
-      a.`name` = #{name}
-      limit 1
-  </select>
-
-  <select id="findByCode" resultMap="base">
-      SELECT
-      <include refid="column_List"/>
-      FROM item a
-      WHERE
-      a.`code` = #{code}
-      limit 1
-  </select>
-
-  <select id="queryItemList" resultType="com.jd.dtos.ItemDto">
-      SELECT
-          a.id,
-          a.`name`,
-          GROUP_CONCAT(c.path) path,
-          a.price,
-          a.inventory,
-          b.`name` shopName,
-          a.business_id,
-          a.category_id,
-          d.`name` tagName,
-          a.spec,
-          a.`code`,
-          a.market_able,
-          a.create_time
-      FROM
-          item a
-      JOIN shop b ON b.id = a.business_id
-      AND b.deleted = FALSE
-      JOIN tag d ON d.id = a.category_id
-      AND d.deleted = FALSE
-      LEFT JOIN picture c ON a.id = c.foreign_id
-      AND c.picture_type = 'ITEM'
-      AND c.deleted = FALSE
-      WHERE
-          a.deleted = FALSE
-      <if test="param != null ">
-          <if test="param.categoryId != null ">
-            AND a.category_id = #{param.categoryId}
-          </if>
-          <if test="param.businessId != null ">
-            AND a.business_id = #{param.businessId}
-          </if>
-          <if test="param.marketAble != null ">
-            AND  a.market_able = #{param.marketAble}
-          </if>
-          <if test="param.key != null ">
-            AND (
-            a.`name` LIKE CONCAT('%',#{param.key}, '%')
-            )
-          </if>
-      </if>
-      GROUP BY a.id
-  </select>
-
-  <update id="delItem" >
-      UPDATE
-      item
-      SET
-      deleted = TRUE
-      WHERE
-      id IN
-      <foreach collection="idList" item="id" open="("  separator="," close=")" >
-        #{id}
-      </foreach>
-  </update>
-
-  <update id="marketAble">
-      UPDATE
-      item
-      SET
-      market_able = #{market}
-      WHERE
-      id IN
-      <foreach collection="idList" item="id" open="("  separator="," close=")" >
-        #{id}
-      </foreach>
-  </update>
+        a.id,
+        a.`name`,
+        GROUP_CONCAT(c.path) path,
+        a.price,
+        a.inventory,
+        a.remark,
+        b.`name` shopName,
+        a.business_id businessId,
+        a.category_id categroyId,
+        d.`name` tagName,
+        a.spec,
+        a.`code`,
+        a.material,
+        a.certificate,
+        a.years,
+        a.market_able marketAble,
+        a.create_time createTime,
+        e.support,
+        e.against,
+        COUNT(e.id)evaluations
+        FROM
+        item a
+        JOIN shop b ON b.id = a.business_id
+        AND b.deleted = FALSE
+        JOIN tag d ON d.id = a.category_id
+        AND d.deleted = FALSE
+        LEFT JOIN picture c ON a.id = c.foreign_id
+        AND c.picture_type = 'ITEM'
+        AND c.deleted = FALSE
+        LEFT JOIN evaluation e ON e.business_id = a.id AND e.deleted = FALSE
+        WHERE
+        a.deleted = FALSE
+        AND  a.id = #{id}
+        GROUP BY
+        a.id
+    </select>
 
 </mapper>

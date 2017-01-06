@@ -5,14 +5,18 @@ import com.github.pagehelper.PageInfo;
 import com.jd.common.mybatis.Pager;
 import com.jd.core.utils.CollectionUtils;
 import com.jd.dao.mapper.user.EvaluationMapperExt;
+import com.jd.dao.mapper.user.FavoritesMapperExt;
 import com.jd.dao.mapper.user.ItemMapperExt;
+import com.jd.dao.mapper.user.ItemTagMapperExt;
 import com.jd.dtos.EvaluationDto;
 import com.jd.dtos.ItemDto;
+import com.jd.dtos.ItemTagDto;
 import com.jd.entity.user.Evaluation;
+import com.jd.entity.user.Favorites;
 import com.jd.entity.user.Item;
+import com.jd.entity.user.ItemTag;
 import com.jd.service.item.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -33,9 +37,20 @@ public class ItemServiceImpl implements ItemService {
     @Autowired
     EvaluationMapperExt evaluationMapperExt;
 
+    @Autowired
+    ItemTagMapperExt itemTagMapperExt;
+
+    @Autowired
+    FavoritesMapperExt favoritesMapperExt;
+
     @Override
     public Item findById(Long id) {
         return itemMapperExt.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public ItemDto findDetailById(Long id) {
+        return itemMapperExt.findDetailById(id);
     }
 
     @Override
@@ -99,10 +114,21 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Evaluation saveEvaluation(Evaluation evaluation) {
-       Long id =  evaluationMapperExt.insertSelective(evaluation);
-       if (id !=null && id.intValue()>0)
-           return evaluationMapperExt.selectByPrimaryKey(id);
+        Long id = evaluationMapperExt.insertSelective(evaluation);
+        if (id != null && id.intValue() > 0)
+            return evaluationMapperExt.selectByPrimaryKey(id);
         return null;
+    }
+
+    @Override
+    public List<ItemTag> queryTagList(ItemTagDto dto) {
+        return itemTagMapperExt.queryTagList(dto);
+    }
+
+    @Override
+    public Favorites saveFavorites(Favorites favorites) {
+        int ok = favoritesMapperExt.insertSelective(favorites);
+        return ok > 0 ? favorites : null;
     }
 
 }
