@@ -128,9 +128,9 @@ public class SystemController {
         Ensure.that(role).isNotNull("1013");
         RolesResponse response =  mapper.map(role, RolesResponse.class);
         List<RoleMenuRoleResourceResponse>  roleResourceResponses = getRoleResourceList(role.getId());
+        List<Long> meuns = new ArrayList<>();
+        List<Long> res = new ArrayList<>();
         if (com.jd.core.utils.CollectionUtils.isNotEmpty(roleResourceResponses)) {
-            List<Long> meuns = new ArrayList<>();
-            List<Long> res = new ArrayList<>();
             for (RoleMenuRoleResourceResponse resourceResponse : roleResourceResponses) {
                 meuns.add(resourceResponse.getId());
                 if (com.jd.core.utils.CollectionUtils.isNotEmpty(resourceResponse.getResource()))
@@ -138,14 +138,15 @@ public class SystemController {
                         res.add(resDto.getId());
                     }
             }
-            response.setResourceIds(res);
-            response.setMeunIds(meuns);
         }
+        response.setResourceIds(res);
+        response.setMeunIds(meuns);
         return new JsonResult(response);
     }
 
     /**
      * 角色删除 （标识删除）
+     *
      *
      * @param roleId
      * @return
@@ -366,8 +367,11 @@ public class SystemController {
         TagDto dto = null;
         if (tagRequest != null)
             dto = mapper.map(tagRequest, TagDto.class);
-        PageInfo<Tag> pageInfo = shopService.queryTagList(null, dto);
-        return new JsonResult(DozerUtils.maps(pageInfo.getList(), TagResponse.class));
+        List<Tag> list = shopService.queryTagList( dto);
+        if (CollectionUtils.isNotEmpty(list))
+            return new JsonResult(DozerUtils.maps(list, TagResponse.class));
+        else
+            return new JsonResult();
     }
 
     /**

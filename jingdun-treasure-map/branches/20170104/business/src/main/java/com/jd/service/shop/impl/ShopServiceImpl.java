@@ -52,6 +52,11 @@ public class ShopServiceImpl implements ShopService {
     }
 
     @Override
+    public List<Tag> queryTagList( TagDto tag) {
+        return tagMapperExt.queryTagList(tag);
+    }
+
+    @Override
     public Boolean delTagById(Long id) {
         Tag tag = new Tag();
         tag.setId(id);

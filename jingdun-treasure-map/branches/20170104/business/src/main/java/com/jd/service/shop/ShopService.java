@@ -18,6 +18,8 @@ public interface ShopService {
 
     PageInfo<Tag> queryTagList(Pager pager, TagDto tag);
 
+    List<Tag> queryTagList(TagDto tag);
+
     Boolean delTagById(Long id);
 
     Boolean saveTag(Tag tag);
