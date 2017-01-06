@@ -17,12 +17,6 @@ public class Item extends BaseDomain {
 
     private BigDecimal inventory;
 
-    private String material;
-
-    private String desc;
-
-    private String dynasty;
-
     private BigDecimal oriPrice;
 
     private Long categoryId;
@@ -48,6 +42,14 @@ public class Item extends BaseDomain {
     private BigDecimal purchasePrice;
 
     private String spec;
+
+    private String material;
+
+    private String years;
+
+    private String certificate;
+
+    private String remark;
 
     private BigDecimal minPrice;
 
@@ -109,30 +111,6 @@ public class Item extends BaseDomain {
 
     public void setInventory(BigDecimal inventory) {
         this.inventory = inventory;
-    }
-
-    public String getMaterial() {
-        return material;
-    }
-
-    public void setMaterial(String material) {
-        this.material = material == null ? null : material.trim();
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc == null ? null : desc.trim();
-    }
-
-    public String getDynasty() {
-        return dynasty;
-    }
-
-    public void setDynasty(String dynasty) {
-        this.dynasty = dynasty == null ? null : dynasty.trim();
     }
 
     public BigDecimal getOriPrice() {
@@ -237,6 +215,38 @@ public class Item extends BaseDomain {
 
     public void setSpec(String spec) {
         this.spec = spec == null ? null : spec.trim();
+    }
+
+    public String getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(String material) {
+        this.material = material == null ? null : material.trim();
+    }
+
+    public String getYears() {
+        return years;
+    }
+
+    public void setYears(String years) {
+        this.years = years == null ? null : years.trim();
+    }
+
+    public String getCertificate() {
+        return certificate;
+    }
+
+    public void setCertificate(String certificate) {
+        this.certificate = certificate == null ? null : certificate.trim();
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark == null ? null : remark.trim();
     }
 
     public BigDecimal getMinPrice() {

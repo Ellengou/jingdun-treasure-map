@@ -5,35 +5,33 @@ import com.jd.common.mybatis.Pager;
 import com.jd.constant.BusinessType;
 import com.jd.core.ensure.Ensure;
 import com.jd.dtos.EvaluationDto;
+import com.jd.dtos.ItemTagDto;
 import com.jd.entity.user.Evaluation;
+import com.jd.entity.user.Favorites;
+import com.jd.entity.user.ItemTag;
 import com.jd.entity.user.Picture;
 import com.jd.face.JsonResult;
-import com.jd.request.CommonRequest;
-import com.jd.request.EvaluationListRequest;
-import com.jd.request.EvaluationRequest;
+import com.jd.request.*;
 import com.jd.response.EevaluationListResponse;
+import com.jd.response.TagResponse;
 import com.jd.service.item.ItemService;
 import com.jd.service.shop.CurioCityService;
 import com.jd.service.shop.PictureService;
-import com.jd.utils.ArrayUtils;
-import com.jd.utils.DozerUtils;
-import com.jd.utils.FileUtil;
-import com.jd.utils.StringUtil;
+import com.jd.utils.*;
 import com.jd.webkits.filter.WordFilter;
 import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Created by renchao on 2017/1/5.
  */
 @Controller
 @RequestMapping("/wap/user")
-public class UserController {
+public class UserController extends BaseController{
 
 
     @Autowired
@@ -56,8 +54,8 @@ public class UserController {
      */
     @RequestMapping(value = "/eval", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult itemEvaluation(@RequestBody CommonRequest<EvaluationRequest> request) {
-        EvaluationRequest evaluationRequest = request.getParam(EvaluationRequest.class);
+    public JsonResult itemEvaluation(EvaluationRequest request) {
+        EvaluationRequest evaluationRequest = request;
         Ensure.that(evaluationRequest).isNotNull("50002");
         Ensure.that(evaluationRequest.getContent()).isNotNull("50002");
         Evaluation evaluation = mapper.map(evaluationRequest, Evaluation.class);
@@ -96,5 +94,23 @@ public class UserController {
         if (pager != null)
             pager = new Pager(pager.getPageNum(), pager.getPageSize(), evaluationDtoPageInfo.getTotal());
         return new JsonResult(pager, DozerUtils.maps(evaluationDtoPageInfo.getList(), EevaluationListResponse.class));
+    }
+
+
+    /**
+     * 商品收藏
+     *
+     * @return
+     */
+    @RequestMapping(value = "/favorite/{itemId}", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonResult itemFavorite(@PathVariable("itemId") Long itemId) {
+        Favorites favorites = new Favorites();
+        favorites.setBusinessId(itemId);
+        favorites.setType(BusinessType.FavoritesType.ITEM.name());
+        favorites.setUserId(getLoginUserId());
+        Favorites res = itemService.saveFavorites(favorites);
+        Ensure.that(res).isNotNull("USER_1022");
+        return new JsonResult();
     }
 }
