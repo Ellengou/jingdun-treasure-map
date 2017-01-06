@@ -113,4 +113,30 @@ public class UserController extends BaseController{
         Ensure.that(res).isNotNull("USER_1022");
         return new JsonResult();
     }
+
+    /**
+     * 评论点击 踩
+     *
+     * @return
+     */
+    @RequestMapping(value = "/eval/down/{id}", method = RequestMethod.PUT)
+    @ResponseBody
+    public JsonResult itemEvaluationDown(@PathVariable("id") Long eid) {
+        boolean res = itemService.updateEvaluationUpOrDown(eid,false);
+        Ensure.that(res).isTrue("20001");
+        return new JsonResult();
+    }
+
+    /**
+     * 评论点击 赞
+     *
+     * @return
+     */
+    @RequestMapping(value = "/eval/up/{id}", method = RequestMethod.PUT)
+    @ResponseBody
+    public JsonResult itemEvaluationUp(@PathVariable("id") Long eid) {
+        boolean res = itemService.updateEvaluationUpOrDown(eid,true);
+        Ensure.that(res).isTrue("20001");
+        return new JsonResult();
+    }
 }

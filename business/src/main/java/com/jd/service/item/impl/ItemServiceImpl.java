@@ -131,4 +131,12 @@ public class ItemServiceImpl implements ItemService {
         return ok > 0 ? favorites : null;
     }
 
+    @Override
+    public Boolean updateEvaluationUpOrDown(Long eid, boolean b) {
+        if (b)
+            return evaluationMapperExt.updateEvaluationUp(eid) > 0;
+        else
+            return evaluationMapperExt.updateEvaluationDown(eid) > 0;
+    }
+
 }

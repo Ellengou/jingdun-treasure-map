@@ -12,4 +12,8 @@ public interface EvaluationMapperExt extends EvaluationMapper {
     List<EvaluationDto> queryEvaluationListByItemIdOrUserId(@Param("param") EvaluationDto evaluationDto);
 
     List<EvaluationDto> queryEvaluationListByShopId(@Param("param") EvaluationDto evaluationDto);
+
+    int updateEvaluationUp(@Param("id") Long eid);
+
+    int updateEvaluationDown(@Param("id") Long eid);
 }
