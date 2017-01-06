@@ -1,5 +1,6 @@
 package com.jd.utils;
 
+import com.jd.core.ensure.Ensure;
 import com.qiniu.api.auth.AuthException;
 import com.qiniu.api.auth.digest.Mac;
 import com.qiniu.api.config.Config;
@@ -8,22 +9,25 @@ import com.qiniu.api.io.PutExtra;
 import com.qiniu.api.io.PutRet;
 import com.qiniu.api.rs.*;
 import com.qiniu.common.QiniuException;
+import com.qiniu.common.Zone;
 import com.qiniu.http.Response;
 import com.qiniu.storage.BucketManager;
+import com.qiniu.storage.Configuration;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.storage.model.DefaultPutRet;
 import com.qiniu.storage.model.FileInfo;
 import com.qiniu.storage.model.FileListing;
 import com.qiniu.util.Auth;
+import com.qiniu.util.StringMap;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -41,6 +45,9 @@ public abstract class QiniuUtils {
      */
     public static String QINIU_BUCKET;
     public static String QINIU_BUCKET_TEST;
+    public static String QINIU_BUCKET_ID;
+    public static String QINIU_BUCKET_IMAGE;
+    public static String QINIU_BUCKET_FILE;
     /**
      * 空间默认域名
      */
@@ -51,21 +58,45 @@ public abstract class QiniuUtils {
 
     private static Auth auth;
 
-    private static UploadManager uploadManager = new UploadManager();
+    private static UploadManager uploadManager;
 
     private static int LIMIT_SIZE = 1000;
 
     private static String QINIU_MIME = "multipart/form-data";
 
+    public static Configuration configuration;
+
+    public static BucketManager bucketManager;
+
+    ///////////////////////指定上传的Zone的信息//////////////////
+    //第一种方式: 指定具体的要上传的zone
+    //注：该具体指定的方式和以下自动识别的方式选择其一即可
+    //要上传的空间(bucket)的存储区域为华东时
+    // Zone z = Zone.zone0();
+    //要上传的空间(bucket)的存储区域为华北时
+    // Zone z = Zone.zone1();
+    //要上传的空间(bucket)的存储区域为华南时
+    // Zone z = Zone.zone2();
+
+    //第二种方式: 自动识别要上传的空间(bucket)的存储区域是华东、华北、华南。
+    //Zone z = Zone.autoZone();
+
     static {
         QINIU_BUCKET = "jingdun";
         QINIU_DOMAIN = "ohfpl7rfr.bkt.clouddn.com";
         QINIU_BUCKET_TEST = "test";
+        QINIU_BUCKET_FILE = "file";
+        QINIU_BUCKET_ID = "base";
+        QINIU_BUCKET_IMAGE = "image";
         QINIU_DOMAIN_TEST = "oj4wlx1ar.bkt.clouddn.com";
         Config.ACCESS_KEY = "ugPPPibV_KE825Zrf6mXHMKf343kvBRka27CVIHu";
         Config.SECRET_KEY = "Mx9G_48dHOr8E9nI1bZcdzcjcLMdhb8i2L3sv62y";
         mac = new Mac(Config.ACCESS_KEY, Config.SECRET_KEY);
         auth = Auth.create(mac.accessKey, mac.secretKey);
+        configuration = new Configuration(Zone.autoZone());
+        bucketManager = new BucketManager(auth,configuration);
+        uploadManager = new UploadManager(configuration);
+
     }
 
     /**
@@ -148,42 +179,6 @@ public abstract class QiniuUtils {
 
 
     /**
-     * @param @return
-     * @param @throws QiniuException
-     * @return String[]
-     * @throws
-     * @Description: 返回七牛帐号的所有空间
-     */
-    public static String[] listBucket() throws QiniuException {
-        Auth auth = Auth.create(mac.accessKey, mac.secretKey);
-        BucketManager bucketManager = new BucketManager(auth);
-        return bucketManager.buckets();
-    }
-
-    /**
-     * @param bucketName 空间名称
-     * @param prefix     文件名前缀
-     * @param limit      每次迭代的长度限制，最大1000，推荐值 100[即一个批次从七牛拉多少条]
-     * @param @return
-     * @return List<FileInfo>
-     * @throws
-     * @Description: 获取指定空间下的文件列表
-     */
-    public static List<FileInfo> listFileOfBucket(String bucketName, String prefix, int limit) {
-        Auth auth = Auth.create(mac.accessKey, mac.secretKey);
-        BucketManager bucketManager = new BucketManager(auth);
-        BucketManager.FileListIterator it = bucketManager.createFileListIterator(bucketName, prefix, limit, null);
-        List<FileInfo> list = new ArrayList<FileInfo>();
-        while (it.hasNext()) {
-            FileInfo[] items = it.next();
-            if (null != items && items.length > 0) {
-                list.addAll(Arrays.asList(items));
-            }
-        }
-        return list;
-    }
-
-    /**
      * @param @param  inputStream    待上传文件输入流
      * @param @param  bucketName     空间名称
      * @param @param  key            空间内文件的key
@@ -195,10 +190,8 @@ public abstract class QiniuUtils {
      * @Description: 七牛图片上传
      */
     public static String uploadFile(InputStream inputStream, String bucketName, String key, String mimeType) throws IOException {
-        Auth auth = Auth.create(mac.accessKey, mac.secretKey);
-        String token = auth.uploadToken(bucketName);
         byte[] byteData = IOUtils.toByteArray(inputStream);
-        Response response = uploadManager.put(byteData, key, token, null, mimeType, false);
+        Response response = uploadManager.put(byteData, key, getUpToken(bucketName), null, mimeType, false);
         inputStream.close();
         return response.bodyString();
     }
@@ -213,12 +206,12 @@ public abstract class QiniuUtils {
      * @throws
      * @Description: 七牛图片上传
      */
-    public static String uploadFile(InputStream inputStream, String bucketName, String key) throws IOException {
+    public static StringMap uploadFile(InputStream inputStream, String bucketName, String key) throws IOException {
         String token = auth.uploadToken(bucketName);
         byte[] byteData = IOUtils.toByteArray(inputStream);
         Response response = uploadManager.put(byteData, key, token, null, null, false);
         inputStream.close();
-        return response.bodyString();
+        return response.jsonToMap();
     }
 
     /**
@@ -230,12 +223,12 @@ public abstract class QiniuUtils {
      * @throws
      * @Description: 七牛图片上传
      */
-    public static String uploadFile(InputStream inputStream, String bucketName) throws IOException {
-        String token = auth.uploadToken(bucketName);
+    public static String uploadFileSpecBucket(InputStream inputStream, String bucketName) throws IOException {
         byte[] byteData = IOUtils.toByteArray(inputStream);
-        Response response = uploadManager.put(byteData, mac.secretKey, token, null, null, false);
+        Response response = uploadManager.put(byteData, null, getUpToken(bucketName), null, null, false);
         inputStream.close();
-        return response.bodyString();
+        Ensure.that(response.isOK()).isTrue("60001");
+        return QiniuUtils.getFileUrl(String.valueOf(response.jsonToMap().get("key")));
     }
 
     /**
@@ -246,13 +239,11 @@ public abstract class QiniuUtils {
      * @throws
      * @Description: 七牛图片上传至默认空间
      */
-    public static String uploadFile(InputStream inputStream) throws IOException {
-        String token;
-        token = auth.uploadToken(QINIU_BUCKET);
+    public static StringMap uploadFile(InputStream inputStream,String bucket) throws IOException {
         byte[] byteData = IOUtils.toByteArray(inputStream);
-        Response response = uploadManager.put(byteData, mac.secretKey, token, null, QINIU_MIME, false);
+        Response response = uploadManager.put(byteData, null, getUpToken(bucket), null, null, false);
         inputStream.close();
-        return response.bodyString();
+        return response.jsonToMap();
     }
 
 
@@ -268,7 +259,6 @@ public abstract class QiniuUtils {
      * @Description: 七牛图片上传
      */
     public static String uploadFile(String filePath, String fileName, String bucketName, String key) throws IOException {
-        Auth auth = Auth.create(mac.accessKey, mac.secretKey);
         String token = auth.uploadToken(bucketName);
         InputStream is = new FileInputStream(new File(filePath + fileName));
         byte[] byteData = IOUtils.toByteArray(is);
@@ -287,7 +277,6 @@ public abstract class QiniuUtils {
      * @Description: 七牛图片上传[若没有指定文件的key, 则默认将fileName参数作为文件的key]
      */
     public static String uploadFile(String filePath, String fileName, String bucketName) throws IOException {
-        Auth auth = Auth.create(mac.accessKey, mac.secretKey);
         String token = auth.uploadToken(bucketName);
         InputStream is = new FileInputStream(new File(filePath + fileName));
         byte[] byteData = IOUtils.toByteArray(is);
@@ -307,8 +296,6 @@ public abstract class QiniuUtils {
      * @Description: 提取网络资源并上传到七牛空间里
      */
     public static String fetchToBucket(String url, String bucketName, String key) throws QiniuException {
-        Auth auth = Auth.create(mac.accessKey, mac.secretKey);
-        BucketManager bucketManager = new BucketManager(auth);
         DefaultPutRet putret = bucketManager.fetch(url, bucketName, key);
         return putret.key;
     }
@@ -323,8 +310,6 @@ public abstract class QiniuUtils {
      * @Description: 提取网络资源并上传到七牛空间里, 不指定key，则默认使用url作为文件的key
      */
     public static String fetchToBucket(String url, String bucketName) throws QiniuException {
-        Auth auth = Auth.create(mac.accessKey, mac.secretKey);
-        BucketManager bucketManager = new BucketManager(auth);
         DefaultPutRet putret = bucketManager.fetch(url, bucketName);
         return putret.key;
     }
@@ -340,8 +325,6 @@ public abstract class QiniuUtils {
      * @Description: 七牛空间内文件复制
      */
     public static void copyFile(String bucket, String key, String targetBucket, String targetKey) throws QiniuException {
-        Auth auth = Auth.create(mac.accessKey, mac.secretKey);
-        BucketManager bucketManager = new BucketManager(auth);
         bucketManager.copy(bucket, key, targetBucket, targetKey);
     }
 
@@ -356,8 +339,6 @@ public abstract class QiniuUtils {
      * @Description: 七牛空间内文件剪切
      */
     public static void moveFile(String bucket, String key, String targetBucket, String targetKey) throws QiniuException {
-        Auth auth = Auth.create(mac.accessKey, mac.secretKey);
-        BucketManager bucketManager = new BucketManager(auth);
         bucketManager.move(bucket, key, targetBucket, targetKey);
     }
 
@@ -371,8 +352,6 @@ public abstract class QiniuUtils {
      * @Description: 七牛空间内文件重命名
      */
     public static void renameFile(String bucket, String key, String targetKey) throws QiniuException {
-        Auth auth = Auth.create(mac.accessKey, mac.secretKey);
-        BucketManager bucketManager = new BucketManager(auth);
         bucketManager.rename(bucket, key, targetKey);
     }
 
@@ -385,8 +364,6 @@ public abstract class QiniuUtils {
      * @Description: 七牛空间内文件删除
      */
     public static void deleteFile(String bucket, String key) throws QiniuException {
-        Auth auth = Auth.create(mac.accessKey, mac.secretKey);
-        BucketManager bucketManager = new BucketManager(auth);
         bucketManager.delete(bucket, key);
     }
 
@@ -401,8 +378,6 @@ public abstract class QiniuUtils {
      * @Description: 返回指定空间下的所有文件信息
      */
     public static FileInfo[] findFiles(String bucketName, String prefix, int limit) throws QiniuException {
-        Auth auth = Auth.create(mac.accessKey, mac.secretKey);
-        BucketManager bucketManager = new BucketManager(auth);
         FileListing listing = bucketManager.listFiles(bucketName, prefix, null, limit, null);
         if (listing == null || listing.items == null || listing.items.length <= 0) {
             return null;
@@ -420,8 +395,6 @@ public abstract class QiniuUtils {
      * @Description: 返回指定空间下的所有文件信息
      */
     public static FileInfo[] findFiles(String bucketName, String prefix) throws QiniuException {
-        Auth auth = Auth.create(mac.accessKey, mac.secretKey);
-        BucketManager bucketManager = new BucketManager(auth);
         FileListing listing = bucketManager.listFiles(bucketName, prefix, null, LIMIT_SIZE, null);
         if (listing == null || listing.items == null || listing.items.length <= 0) {
             return null;
@@ -439,8 +412,6 @@ public abstract class QiniuUtils {
      * @Description: 返回指定空间下的所有文件信息
      */
     public static FileInfo[] findFiles(String bucketName) throws QiniuException {
-        Auth auth = Auth.create(mac.accessKey, mac.secretKey);
-        BucketManager bucketManager = new BucketManager(auth);
         FileListing listing = bucketManager.listFiles(bucketName, null, null, LIMIT_SIZE, null);
         if (listing == null || listing.items == null || listing.items.length <= 0) {
             return null;
@@ -459,8 +430,6 @@ public abstract class QiniuUtils {
      * @Description: 返回指定空间下的某个文件
      */
     public static FileInfo findOneFile(String bucketName, String key, int limit) throws QiniuException {
-        Auth auth = Auth.create(mac.accessKey, mac.secretKey);
-        BucketManager bucketManager = new BucketManager(auth);
         FileListing listing = bucketManager.listFiles(bucketName, key, null, limit, null);
         if (listing == null || listing.items == null || listing.items.length <= 0) {
             return null;
@@ -478,8 +447,6 @@ public abstract class QiniuUtils {
      * @Description: 返回指定空间下的某个文件(重载)
      */
     public static FileInfo findOneFile(String bucketName, String key) throws QiniuException {
-        Auth auth = Auth.create(mac.accessKey, mac.secretKey);
-        BucketManager bucketManager = new BucketManager(auth);
         FileListing listing = bucketManager.listFiles(bucketName, key, null, LIMIT_SIZE, null);
         if (listing == null || listing.items == null || listing.items.length <= 0) {
             return null;
@@ -501,7 +468,7 @@ public abstract class QiniuUtils {
         // 读取的时候按的二进制，所以这里要同一
         ByteArrayInputStream inputStream = new ByteArrayInputStream(content.getBytes());
 
-        String uptoken = getUpToken();
+        String uptoken = getUpToken(QINIU_BUCKET);
 
         // 可选的上传选项，具体说明请参见使用手册。
         PutExtra extra = new PutExtra();
@@ -516,15 +483,9 @@ public abstract class QiniuUtils {
         }
     }
 
-    //通过文件路径上传文件
-    public static String uploadFile(String localFile) throws Exception {
-        File file = new File(localFile);
-        return uploadFile(file);
-    }
-
     //通过File上传
-    public static String uploadFile(File file) throws Exception {
-        String uptoken = getUpToken();
+    public static String uploadFile(File file,String bucket) throws Exception {
+        String uptoken = getUpToken(bucket);
 
         // 可选的上传选项，具体说明请参见使用手册。
         PutExtra extra = new PutExtra();
@@ -549,8 +510,13 @@ public abstract class QiniuUtils {
     }
 
     //获得圖片地址
-    public static String getFileUrl(String filename) throws Exception {
-        String baseUrl = URLUtils.makeBaseUrl(QINIU_DOMAIN, filename);
+    public static String getFileUrl(String filename) {
+        String baseUrl = null;
+        try {
+            baseUrl = URLUtils.makeBaseUrl(QINIU_DOMAIN, filename);
+        } catch (EncoderException e) {
+            e.printStackTrace();
+        }
         return baseUrl;
     }
 
@@ -561,10 +527,8 @@ public abstract class QiniuUtils {
     }
 
     //获取凭证
-    private static String getUpToken() throws AuthException, JSONException {
-        PutPolicy putPolicy = new PutPolicy(QINIU_DOMAIN);
-        String uptoken = putPolicy.token(mac);
-        return uptoken;
+    public static String getUpToken(String bucket){
+        return auth.uploadToken(bucket,null,3600,new StringMap());
     }
 
     private Mac getMac() {
@@ -584,65 +548,57 @@ public abstract class QiniuUtils {
         return QINIU_DOMAIN + "/" + key;
     }
 
-    public static void main(String[] args) throws AuthException, JSONException, EncoderException, IOException {
-        String file = "/Users/ellengou/Downloads/IMG_0772.JPG";
-        FileInputStream inputStream = new FileInputStream(new File(file));
-
-        String ok = uploadFile(inputStream);
+    /**
+     * 上传文件
+     * @param file
+     * @return
+     */
+    public static String upload(MultipartFile file,String bucket){
         try {
-            ok = getDownloadFileUrl("IMG_0772.JPG");
+            InputStream fileInputStream = file.getInputStream();
+            //调用put方法上传
+            Response map = uploadManager.put(IOUtils.toByteArray(fileInputStream),null,getUpToken(bucket));
+            Ensure.that(map).isNotNull("60001");
+            Ensure.that(map.isOK()).isTrue("60001");
+            //获取上传后 KEY 并且返回文件地址
+            //或者 可以使用 domain/key 直接返回 减少服务请求
+            return QiniuUtils.getFileUrl(String.valueOf(map.jsonToMap().get("key")));
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.error(e.getMessage());
+            Ensure.that(e).isNotNull("60002");
+        }
+        return null;
+    }
+
+    /**
+     * 流式上传
+     * @param inputStream
+     * @return
+     */
+    public static String upload(InputStream inputStream,String bucket){
+        try {
+            //调用put方法上传
+            Response map = uploadManager.put(IOUtils.toByteArray(inputStream),null,getUpToken(bucket));
+            Ensure.that(map).isNotNull("60001");
+            Ensure.that(map.isOK()).isTrue("60001");
+            //获取上传后 KEY 并且返回文件地址
+            //或者 可以使用 domain/key 直接返回 减少服务请求
+            return QiniuUtils.getFileUrl(String.valueOf(map.jsonToMap().get("key")));
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.error(e.getMessage());
+            Ensure.that(e).isNotNull("60002");
+        }
+        return null;
+    }
+
+    public static void main(String[] args) {
+        try {
+            System.out.println(getDownloadFileUrl("FnZTz9xFH45IVP1FoRqhsxEu0FjX"));
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        System.out.println("====================== upload =============== :  " + ok);
-
-//        boolean ok = upload(QINIU_BUCKET, mac.secretKey, file);
-//        System.out.println("====================== upload =============== :  " + ok);
-//
-//
-//        String url = download(QINIU_DOMAIN, mac.secretKey);
-//        System.out.println("------------------download  -----------------------:     " + url);
-//
-//
-//        String response = uploadFile("/Users/ellengou/Downloads/", "IMG_0769.JPG", QINIU_BUCKET);
-//        System.out.println("===================  uploadFile 上傳結果為======== :     " + response);
-//
-//        String[] buckets = new String[0];
-//        buckets = listBucket();
-//        System.out.println("######################## listBucket start ###########################");
-//        for (String bucket : buckets) {
-//            System.out.println(bucket);
-//        }
-//        System.out.println("######################## listBucket start ###########################");
-//        System.out.println();
-//        System.out.println("######################## listBucket start ###########################");
-//        List<FileInfo> list = listFileOfBucket(QINIU_BUCKET, null, 10000);
-//        for (FileInfo fileInfo : list) {
-//            System.out.println("key：" + fileInfo.key);
-//            System.out.println("hash：" + fileInfo.hash);
-//            System.out.println("................");
-//        }
-//        System.out.println("######################## listBucket end ###########################");
-
-//        copyFile(QINIU_BUCKET,  mac.secretKey, QINIU_BUCKET_TEST, mac.secretKey);
-
-//        renameFile(QINIU_BUCKET, "Mx9G_48dHOr8E9nI1bZcdzcjcLMdhb8i2L3sv62y", "images-test-1.jpg");
-
-//        deleteFile(QINIU_BUCKET, "images-test-2222.jpg");
-
-//        fetchToBucket("http://www.nanrenwo.net/uploads/allimg/121026/14-1210261JJD03.jpg", QINIU_BUCKET, "test2.jpg");
-//        fetchToBucket("http://pic1.win4000.com/pic/d/bf/320f1209099.jpg", QINIU_BUCKET_TEST, "test3.jpg");
-
-
-//        FileInfo[] fileInfos = new FileInfo[0];
-//        fileInfos = findFiles(QINIU_BUCKET, "", 1000000);
-//
-//        System.out.println("..............findFiles  start..................... ");
-//        for (FileInfo fileInfo : fileInfos) {
-//            System.out.println(fileInfo.key);
-//            System.out.println(fileInfo.hash);
-//        }
-//        System.out.println("..............findFiles  end ..................... ");
     }
+
 }
