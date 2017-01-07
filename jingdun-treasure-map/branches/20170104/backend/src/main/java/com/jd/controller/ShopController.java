@@ -227,16 +227,13 @@ public class ShopController extends BaseController {
     /**
      * 删除标签--商户关联
      *
-     * @param request
+     * @param id
      * @return
      */
-    @RequestMapping(value = "/tag/delete", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/tag/delete/{id}", method = RequestMethod.DELETE)
     @ResponseBody
-    public JsonResult delTags(@RequestBody CommonRequest<TagRequest> request) {
-        TagRequest tagRequest = request.getParam(TagRequest.class);
-        Ensure.that(tagRequest).isNotNull("10000");
-        Ensure.that(tagRequest.getTagIds()).isNotNull("10001");
-        Ensure.that(shopService.delShopTagsById(getLoginUserId(), Arrays.asList(tagRequest.getTagIds()))).isTrue("30004");
+    public JsonResult delTags(@PathVariable("id") Long id) {
+        Ensure.that(shopService.delShopTagsById(getLoginUserId(), Arrays.asList(id))).isTrue("30004");
         return new JsonResult();
     }
 }
