@@ -15,4 +15,6 @@ public interface UserMapperExt extends UserMapper {
     User findUserByName(@Param("name") String username);
 
     List<UserDto> queryUserListPage(@Param("param") UserDto userDto);
+
+    User findUserByMobile(@Param("mobile") String contact);
 }

@@ -10,11 +10,11 @@ import com.jd.dtos.EvaluationDto;
 import com.jd.dtos.RolePermissionDto;
 import com.jd.dtos.ShopDto;
 import com.jd.dtos.TagDto;
-import com.jd.entity.user.Shop;
-import com.jd.entity.user.ShopTag;
-import com.jd.entity.user.Tag;
+import com.jd.entity.user.*;
 import com.jd.service.shop.ShopService;
+import com.jd.utils.MD5Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -44,6 +44,18 @@ public class ShopServiceImpl implements ShopService {
 
     @Autowired
     EvaluationMapperExt evaluationMapperExt;
+
+    @Autowired
+    UserMapperExt userMapperExt;
+
+    @Autowired
+    UserShopMapper userShopMapper;
+
+    @Value("${default_user_name_prefix}")
+    String USER_PREFIX;
+
+    @Value("${default_pass}")
+    String DEFAULT_PASS;
 
     @Override
     public PageInfo<Tag> queryTagList(Pager pager, TagDto tag) {
@@ -98,6 +110,19 @@ public class ShopServiceImpl implements ShopService {
     @Override
     public Shop saveShop(Shop shop) {
         Long id = shopMapperExt.insertSelective(shop);
+        User user = userMapperExt.findUserByMobile(shop.getContact());
+        if (user == null) {
+            user = new User();
+            user.setMobile(shop.getContact());
+            user.setAddress(shop.getAddress());
+            user.setUserName(USER_PREFIX + shop.getContact());
+            user.setPassWord(MD5Utils.MD5(DEFAULT_PASS));
+            Ensure.that(userMapperExt.insertSelective(user)).isGt(0, "80001");
+            UserShop userShop = new UserShop();
+            userShop.setShopId(shop.getId());
+            userShop.setUserId(user.getId());
+            userShopMapper.insertSelective(userShop);
+        }
         return id > 0 ? shop : null;
     }
 

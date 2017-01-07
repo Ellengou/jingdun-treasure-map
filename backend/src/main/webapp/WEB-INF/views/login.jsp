@@ -14,7 +14,7 @@
         <div class="logo">
         </div>
     </div>
-    <input type="button" onclick="fileloadon()" value="测试上傳"/>
+    <input type="button" onclick="scoreQuery()" value="测试"/>
     <script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
     <script type="text/javascript">
 
@@ -22,7 +22,7 @@
 //                var url = "/pigs/basic/retail/9";
 //                var url = "/basic/retail/add";
             var base = "http://127.0.0.1:8081";
-            var url = "/basic/role";
+            var url = "/shop/add-update";
 //            var url = "/login";
             var certCode = $("#certCode").val();
 //                var data = {"userName": '李四', "password": '123456',"issuingUnit":certCode,
@@ -38,9 +38,10 @@
             var data = {
                 "param": {
                     "name": "",
-                    "description": "hahsdghahdg",
-                    "meunIds": [1, 8],
-                    "resourceIds": [2, 5]
+                    "slogans": "hahsdghahdg",
+                    "banner": "http://786.342.23.4242/877.png",
+                    "contact": "18878127812",
+                    "address":"萬福里"
                 }
             };
             $.ajax({

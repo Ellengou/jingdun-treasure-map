@@ -48,8 +48,8 @@ public class SystemController {
     @Autowired
     ShopService shopService;
 
-    @Value("${defeaut_pass}")
-    String DEFEAUT_PASS;
+    @Value("${default_pass}")
+    String DEFAULT_PASS;
 
 
     /**
@@ -260,7 +260,7 @@ public class SystemController {
     public JsonResult resetPassword(@PathVariable("id") Long accountId) {
         Account account = accountService.findAccountById(accountId);
         Ensure.that(account).isNotNull("1021");
-        Ensure.that(accountService.updatePassword(accountId,MD5Utils.MD5(DEFEAUT_PASS))).isTrue("1020");
+        Ensure.that(accountService.updatePassword(accountId,MD5Utils.MD5(DEFAULT_PASS))).isTrue("1020");
         return new JsonResult();
     }
 

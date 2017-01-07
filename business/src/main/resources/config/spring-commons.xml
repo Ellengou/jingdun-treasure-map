@@ -25,6 +25,7 @@
                 <value>classpath:*datasource.properties</value>
                 <value>classpath:*resource.properties</value>
                 <value>classpath:*props/error.properties</value>
+                <value>classpath:*config.properties</value>
             </list>
         </property>
     </bean>
