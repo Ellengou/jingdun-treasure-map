@@ -91,14 +91,14 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public Shop updateShop(Shop shop) {
-        shopMapperExt.updateByPrimaryKeySelective(shop);
-        return shopMapperExt.selectByPrimaryKey(shop.getId());
+        int id = shopMapperExt.updateByPrimaryKeySelective(shop);
+        return id > 0 ? shop : null;
     }
 
     @Override
     public Shop saveShop(Shop shop) {
         Long id = shopMapperExt.insertSelective(shop);
-        return shopMapperExt.selectByPrimaryKey(id);
+        return id > 0 ? shop : null;
     }
 
     @Override
