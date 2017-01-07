@@ -24,6 +24,10 @@ public interface AccountService {
 
     public Account updateAccount(AccountDto account);
 
+    public Boolean enableAccount(AccountDto account);
+
+    public Boolean disableAccount(AccountDto account);
+
     public Account saveAccount(AccountDto account);
 
     public List<Role> findRoleByAccountId(Long id);
