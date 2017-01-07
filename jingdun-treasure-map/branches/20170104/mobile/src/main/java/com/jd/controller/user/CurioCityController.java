@@ -110,7 +110,7 @@ public class CurioCityController {
      */
     @RequestMapping(value = "/query", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult queryCurioCityAndShop(CurioCityListRequest request, String key, String cityCode) {
+    public JsonResult queryCurioCityAndShop(CurioCityListRequest request) {
         CurioCityListRequest CurioCityListRequest = request;
         CurioCityDto curioCityDto = null;
         List<ShopDto> shopDtoList;

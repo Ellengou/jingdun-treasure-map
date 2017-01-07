@@ -54,7 +54,7 @@ public class ShopServiceImpl implements ShopService {
     }
 
     @Override
-    public List<Tag> queryTagList( TagDto tag) {
+    public List<Tag> queryTagList(TagDto tag) {
         return tagMapperExt.queryTagList(tag);
     }
 
@@ -153,6 +153,22 @@ public class ShopServiceImpl implements ShopService {
     @Override
     public List<Tag> queryUserTagList(TagDto dto, Long loginUserId) {
         return tagMapperExt.queryUserTagList(dto, loginUserId);
+    }
+
+    @Override
+    public Boolean updateTagSort(String[] tags) {
+        int flag = 0;
+        if (tags != null && tags.length > 0)
+            for (String p : tags) {
+                if (p != null && p.contains(",")) {
+                    String[] idAndSort = p.split(",");
+                    Tag tag = new Tag();
+                    tag.setId(Long.valueOf(idAndSort[0]));
+                    tag.setSort(Long.valueOf(idAndSort[1]));
+                    flag = flag + tagMapperExt.updateByPrimaryKeySelective(tag);
+                }
+            }
+        return flag > 0;
     }
 
 }
