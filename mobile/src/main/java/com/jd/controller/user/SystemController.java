@@ -97,7 +97,7 @@ public class SystemController extends BaseController {
     }
 
     /**
-     * 新增标签 修改標簽
+     * 删除标签
      *
      * @param request
      * @return
@@ -113,7 +113,7 @@ public class SystemController extends BaseController {
     }
 
     /**
-     * 删除标签
+     * 新增标签
      *
      * @param request
      * @return
@@ -124,6 +124,22 @@ public class SystemController extends BaseController {
         TagRequest tag = request;
         Ensure.that(tag).isNotNull("10000");
         Ensure.that(shopService.saveShopTags(tag.getId(), Arrays.asList(tag.getId()))).isTrue("20001");
+        return new JsonResult();
+    }
+
+    /**
+     * 标签排序
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/sort", method = RequestMethod.PUT)
+    @ResponseBody
+    public JsonResult sortTag(TagRequest request) {
+        TagRequest tag = request;
+        Ensure.that(tag).isNotNull("10000");
+        Ensure.that(request.getTags()).isNotNull("10001");
+        Ensure.that(shopService.updateTagSort(request.getTags())).isTrue("20001");
         return new JsonResult();
     }
 

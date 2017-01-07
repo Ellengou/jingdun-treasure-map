@@ -83,11 +83,8 @@ public class HomeController extends BaseController {
      */
     @RequestMapping(value = "/wap/login", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult login(@RequestBody CommonRequest<UserRequest> request) {
-        /**
-         * 修改验证码（同一username10分钟内访问出错3次弹出验证码）
-         */
-        UserRequest userForm = request.getParam(UserRequest.class);
+    public JsonResult login(UserRequest request) {
+        UserRequest userForm = request;
         Object count = SecurityUtils.getSubject().getSession().getAttribute("errCount");
         int errCount = 0;
         if (count != null)
@@ -117,7 +114,7 @@ public class HomeController extends BaseController {
     private UserResponse onAuthenticationSuccess(String username, String password) {
         User user = userService.findUserByNameAndPassword(username, password);
         Ensure.that(user).isNotNull("20002");
-        storeSession(com.jd.account.Account.SESSION_KEY,user);
+        storeSession(com.jd.account.Account.SESSION_KEY, user);
         UserResponse response = mapper.map(user, UserResponse.class);
         response.setSessionId(SecurityUtils.getSubject().getSession().getId().toString());
         return response;

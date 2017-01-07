@@ -51,4 +51,6 @@ public interface ShopService {
     PageInfo<EvaluationDto> queryEvaluationListByShopId(Pager pager, EvaluationDto evaluationDto);
 
     List<Tag> queryUserTagList(TagDto dto, Long loginUserId);
+
+    Boolean updateTagSort(String[] tags);
 }

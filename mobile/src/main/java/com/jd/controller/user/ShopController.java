@@ -48,9 +48,8 @@ public class ShopController extends BaseController {
      */
     @RequestMapping(value = "/page", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult findShopPage(@RequestBody CommonRequest<ShopListRequest> request) {
-        Pager pager = request.getPager();
-        ShopListRequest shopListRequest = request.getParam(ShopListRequest.class);
+    public JsonResult findShopPage(ShopListRequest request, Pager pager) {
+        ShopListRequest shopListRequest = request;
         ShopDto shopDto = null;
         if (shopListRequest != null)
             shopDto = mapper.map(shopListRequest, ShopDto.class);
@@ -69,8 +68,8 @@ public class ShopController extends BaseController {
      */
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult findShopList(@RequestBody CommonRequest<ShopListRequest> request) {
-        ShopListRequest shopListRequest = request.getParam(ShopListRequest.class);
+    public JsonResult findShopList(ShopListRequest request) {
+        ShopListRequest shopListRequest = request;
         ShopDto shopDto = null;
         if (shopListRequest != null)
             shopDto = mapper.map(shopListRequest, ShopDto.class);
@@ -101,12 +100,11 @@ public class ShopController extends BaseController {
      */
     @RequestMapping(value = "/eval/page", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult findShopEvaluationPage(@RequestBody CommonRequest<EvaluationListRequest> request) {
-        Pager pager = request.getPager();
-        EvaluationListRequest evaluationListRequest = request.getParam(EvaluationListRequest.class);
-        Ensure.that(evaluationListRequest).isNotNull("");
-        Ensure.that(evaluationListRequest.getCurioCityId()).isNotNull("");
-        EvaluationDto evaluationDto = mapper.map(evaluationListRequest,EvaluationDto.class);
+    public JsonResult findShopEvaluationPage(EvaluationListRequest request, Pager pager) {
+        EvaluationListRequest listRequest = request;
+        Ensure.that(listRequest).isNotNull("10000");
+        Ensure.that(listRequest.getShopId()).isNotNull("10001");
+        EvaluationDto evaluationDto = mapper.map(listRequest, EvaluationDto.class);
         PageInfo<EvaluationDto> evaluationDtoPageInfo = curioCityService.queryEvaluationListByCurioId(pager, evaluationDto);
         if (pager != null)
             pager = new Pager(pager.getPageNum(), pager.getPageSize(), evaluationDtoPageInfo.getTotal());
