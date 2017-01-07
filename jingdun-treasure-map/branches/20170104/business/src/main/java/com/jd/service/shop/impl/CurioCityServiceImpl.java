@@ -42,19 +42,13 @@ public class CurioCityServiceImpl implements CurioCityService {
     @Override
     public CurioCity updateCurioCity(CurioCity curioCity) {
         int id = curioCityMapperExt.updateByPrimaryKeySelective(curioCity);
-        if (id > 0)
-            return curioCityMapperExt.selectByPrimaryKey(Long.valueOf(id));
-        else
-            return null;
+        return id > 0 ? curioCity : null;
     }
 
     @Override
     public CurioCity saveCurioCity(CurioCity curioCity) {
         int id = curioCityMapperExt.insertSelective(curioCity);
-        if (id > 0)
-            return curioCityMapperExt.selectByPrimaryKey(Long.valueOf(id));
-        else
-            return null;
+        return id > 0 ? curioCity : null;
     }
 
     @Override
