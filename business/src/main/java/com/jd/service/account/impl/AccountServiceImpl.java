@@ -80,6 +80,20 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public Boolean enableAccount(AccountDto account) {
+        Account a = mapper.map(account,Account.class);
+        int ok = accountMapper.updateByPrimaryKeySelective(a);
+        return  ok > 0 ;
+    }
+
+    @Override
+    public Boolean disableAccount(AccountDto account) {
+        Account a = mapper.map(account,Account.class);
+        int ok = accountMapper.updateByPrimaryKeySelective(a);
+        return  ok > 0 ;
+    }
+
+    @Override
     public Account saveAccount(AccountDto account) {
         Account a = mapper.map(account,Account.class);
         int ok =accountMapper.insertSelective(a);

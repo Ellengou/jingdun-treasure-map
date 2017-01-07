@@ -8,7 +8,6 @@ import com.jd.utils.StringUtil;
 public class AccountListRequest {
 
     private String roleIds;
-    private Boolean locked;
     private String key;
     private String status;
     private Boolean enable;
@@ -20,12 +19,18 @@ public class AccountListRequest {
     public void setStatus(String status) {
         this.status = status;
     }
+
     public Boolean getEnable() {
-        if (StringUtil.isNotBlank(this.status)) {
-            enable = Boolean.getBoolean(status);
-            if (!enable && Integer.valueOf(status).intValue()!=0)
+        if (StringUtil.isNotBlank(this.status) && status != "") {
+            if (Integer.valueOf(status) == 1)
+                enable = true;
+            else if (Integer.valueOf(status) == 0)
+                enable = false;
+            else if (Integer.valueOf(status) == -1)
                 enable = null;
-        }else
+            else
+                enable = null;
+        } else
             enable = null;
         return enable;
     }
@@ -43,6 +48,8 @@ public class AccountListRequest {
     }
 
     public String getRoleIds() {
+        if (StringUtil.isNotBlank(roleIds) && roleIds.equals("-1"))
+            roleIds = null;
         return roleIds;
     }
 
@@ -50,11 +57,4 @@ public class AccountListRequest {
         this.roleIds = roleIds;
     }
 
-    public Boolean getLocked() {
-        return locked;
-    }
-
-    public void setLocked(Boolean locked) {
-        this.locked = locked;
-    }
 }

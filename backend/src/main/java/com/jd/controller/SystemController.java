@@ -176,7 +176,7 @@ public class SystemController {
         Pager pager = request.getPager();
         AccountDto account = request.getParam(AccountListRequest.class) != null ? (mapper.map(request.getParam(AccountListRequest.class), AccountDto.class)) : null;
         PageInfo<AccountListDto> pageInfo = accountService.selectAccountList(pager, account);
-        List<AccountResponse> responses = new ArrayList<>();
+        List<AccountListResponse> responses = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(pageInfo.getList()))
             responses = DozerUtils.maps(pageInfo.getList(), AccountListResponse.class);
         if (pager != null)
@@ -243,9 +243,9 @@ public class SystemController {
         res.setId(accountId);
         res.setEnable(enable);
         if(enable)
-            Ensure.that(accountService.updateAccount(res)).isNotNull("1017");
+            Ensure.that(accountService.enableAccount(res)).isTrue("1017");
         else
-            Ensure.that(accountService.updateAccount(res)).isNotNull("1018");
+            Ensure.that(accountService.disableAccount(res)).isTrue("1018");
         return new JsonResult();
     }
 
@@ -430,9 +430,9 @@ public class SystemController {
     public  List<RoleMenuRoleResourceResponse>  getRoleResourceList(Long roleId){
         List<RolePermissionDto> reslist = shopService.findMenusList(roleId);
         List<RoleMenuRoleResourceResponse> roleResourceResponses = new ArrayList<>();
-        List<ResourceResponse> resource = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(reslist))
             for (RolePermissionDto dto : reslist){
+                List<ResourceResponse> resource = new ArrayList<>();
                 RoleMenuRoleResourceResponse resourceResponse = new RoleMenuRoleResourceResponse();
                 resourceResponse.setId(dto.getId());
                 resourceResponse.setName(dto.getName());
