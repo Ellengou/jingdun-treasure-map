@@ -129,7 +129,7 @@ public class HomeController extends BaseController {
         storeSession(com.jd.account.Account.SESSION_MENU_KEY, codes);
         storeSession(com.jd.account.Account.SESSION_RESOURCE_KEY, res);
         storeSession(com.jd.account.Account.SESSION_ROLE, CollectionUtils.isNotEmpty(roles)?roles.get(0):roles);
-        storeSession(com.jd.account.Account.SESSION_USER_BASE, accountService.findBaseByUserId(account.getUserId()));
+//        storeSession(com.jd.account.Account.SESSION_USER_BASE, accountService.findBaseByUserId(account.getUserId()));
         AccountResponse response = mapper.map(account, AccountResponse.class);
         response.setCodes(codes);
         response.setResources(res);
