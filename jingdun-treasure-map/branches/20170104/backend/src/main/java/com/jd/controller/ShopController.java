@@ -136,8 +136,9 @@ public class ShopController extends BaseController {
         Ensure.that(shopRequest).isNotNull("10000");
         String banner = shopRequest.getBanner();
         String cid = shopRequest.getCid();
-        List<String> shopViews = Arrays.asList(shopRequest.getShopViews());
-
+        List<String> shopViews = null;
+        if (shopRequest.getShopViews() != null)
+            shopViews = Arrays.asList(shopRequest.getShopViews());
         Shop shop = mapper.map(shopRequest, Shop.class);
         Shop result;
         if (shopRequest.getId() != null)
@@ -182,7 +183,7 @@ public class ShopController extends BaseController {
         TagDto dto = null;
         if (tagRequest != null)
             dto = mapper.map(tagRequest, TagDto.class);
-        PageInfo<Tag> pageInfo =  shopService.queryTagList(pager, dto);
+        PageInfo<Tag> pageInfo = shopService.queryTagList(pager, dto);
         if (pager != null)
             pager = new Pager(pager.getPageNum(), pager.getPageSize(), pageInfo.getTotal());
         return new JsonResult(pager, DozerUtils.maps(pageInfo.getList(), TagResponse.class));
